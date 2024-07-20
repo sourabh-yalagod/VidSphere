@@ -5,7 +5,7 @@ import path from "path";
 export default defineConfig({
   server: {
     proxy: {
-      "/api": "https://videotube-auro.onrender.com",
+      "/api": "https://vidsphere-backend-8nvl.onrender.com",
       // "/api": "http://localhost:8000",
     },
   },
