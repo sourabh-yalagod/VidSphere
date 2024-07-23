@@ -26,7 +26,7 @@ const BottomNavBar = () => {
         <p>Upload</p>
       </div>
       <div
-        onClick={() => navigate(`/signin/subscription-status/${userId}}`)}
+        onClick={() => navigate(`/signin/subscription-status/${userId}`)}
         className="grid place-items-center gap-1 text-[9px] hover:scale-110 transition-all cursor-pointer"
       >
         <FileStack />

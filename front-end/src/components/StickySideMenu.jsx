@@ -25,22 +25,26 @@ const StickySideMenu = ({ location }) => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
   const { toast } = useToast();
+
   useEffect(() => {
-    const id = userAuth().userId;
-    setUserId(id);
-    if (!userId) {  
-      toast({
-        title: "Please sign-in",
-        description:
-          "To get Access to all pages please authenticate your account . . . . . ",
-        variant: "destructive",
-        duration: 1500,
-      });
-      navigate("/signin");
-    }
+      const id = userAuth().userId;
+      setUserId(id);
+      if (!userId) {
+        toast({
+          title: "Please sign-in",
+          description:
+            "To get Access to all pages please authenticate your account . . . . . ",
+          variant: "destructive",
+          duration: 1500,
+        });
+        navigate("/signin");
+      }
   }, []);
+
   return (
-    <div className="fixed px-2 min-w-16 transition-all h-full left-0 inset-y-0 shadow-black shadow-lg hidden sm:block z-20 dark:bg-slate-900">
+    <div
+      className="fixed px-2 min-w-16 transition-all h-full left-0 inset-y-0 shadow-black shadow-lg hidden sm:block z-20 dark:bg-slate-900"
+    >
       <div
         onClick={() => navigate("/")}
         className="flex items-center gap-4 py-2 mt-16 overflow-hidden px-3 cursor-pointer hover:bg-gray-300 dark:text-white dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
@@ -87,9 +91,7 @@ const StickySideMenu = ({ location }) => {
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() =>
-              navigate(`/signin/settings/settings/${userId}`)
-            }
+            onClick={() => navigate(`/signin/settings/settings/${userId}`)}
           >
             <Settings className="w-6 h-6" />
           </div>

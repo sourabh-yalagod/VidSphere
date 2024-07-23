@@ -15,7 +15,7 @@ import { Comment } from "../models/comment.model.js";
 import { Like } from "../models/like.model.js";
 
 const Options = {
-  httpOnly: true,
+  httpOnly: false,
   secure: true,
 };
 

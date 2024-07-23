@@ -3,10 +3,8 @@ import { Navigate, Outlet } from "react-router-dom";
 import userAuth from "../Services/Auth";
 const SafeRouters = () => {
   const getUserId = useSelector((state) => state.user);
-  // console.log("data ID and TOKEN : ", userAuth);
   const { userId } = userAuth();
   const isLoggedIn = userId?.length > 0;
-
   return isLoggedIn ? <Outlet /> : <Navigate to="/signin" />;
 };
 

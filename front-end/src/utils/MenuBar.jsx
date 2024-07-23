@@ -1,6 +1,6 @@
 import { useToast } from "@/components/ui/use-toast";
 import { useSignOut } from "@/hooks/SignOut";
-import userAuth from "@/Services/Auth"; 
+import userAuth from "@/Services/Auth";
 import {
   BookDashed,
   History,
@@ -16,10 +16,10 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-let userId = userAuth()?.userId || localStorage?.getItem("userId");
+const { userId } = userAuth();
 const menuBarItems = [
   {
-    text: "Craete Account",
+    text: "Create Account",
     link: "/signup",
     icon: <UserPlus2 className="size-6" />,
   },
