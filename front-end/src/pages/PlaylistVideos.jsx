@@ -7,7 +7,7 @@ import Video from "@/utils/Video";
 import VideoNotFound from "@/utils/VideoNotFound";
 import APIloading from "@/utils/APIloading";
 import APIError from "@/utils/APIError";
-import { getUserId } from "@/Services/Auth";
+import userAuth from "@/Services/Auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -20,7 +20,7 @@ const PlaylistVideos = () => {
   const [isloading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const userId = getUserId().userId;
+  const userId = userAuth().userId;
   const queryClient = useQueryClient();
 
   // useEffect(() => {

@@ -3,7 +3,7 @@ import CustomizeVideo from "./CustomizeVideo";
 import { useHandleLikes } from "@/hooks/HandleLikes";
 import { useAddToWatchLater } from "@/hooks/AddToWatchLater";
 import { useToast } from "./ui/use-toast";
-import { getUserId } from "@/Services/Auth";
+import userAuth from "@/Services/Auth";
 
 const VideoFigures = ({ apiResponse, videoId }) => {
   const { handleLikes } = useHandleLikes();
@@ -55,7 +55,7 @@ const VideoFigures = ({ apiResponse, videoId }) => {
           )}
         </p>
       </div>
-      {apiResponse?.owner == getUserId().userId ? (
+      {apiResponse?.owner == userAuth().userId ? (
         <div className="grid place-content-center">
           <CustomizeVideo videoId={videoId} />
         </div>

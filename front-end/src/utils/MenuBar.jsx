@@ -1,7 +1,8 @@
 import { useToast } from "@/components/ui/use-toast";
 import { useSignOut } from "@/hooks/SignOut";
-import { getUserId } from "@/Services/Auth";
+import userAuth from "@/Services/Auth"; 
 import {
+  BookDashed,
   History,
   PictureInPicture,
   PlaySquareIcon,
@@ -15,7 +16,7 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-let userId = getUserId()?.userId || localStorage?.getItem("userId");
+let userId = userAuth()?.userId || localStorage?.getItem("userId");
 const menuBarItems = [
   {
     text: "Craete Account",
@@ -49,7 +50,7 @@ const menuBarItems = [
   },
   {
     text: "Customize-Channel",
-    link: `/signin/settings/customize-profile/${userId}`,
+    link: `/signin/settings/settings/${userId}`,
     icon: <Settings className="size-6" />,
   },
   {
@@ -61,6 +62,11 @@ const menuBarItems = [
     text: "Watch-History",
     link: `/signin/watch-history/${userId}`,
     icon: <History className="size-6" />,
+  },
+  {
+    text: "Dashboard",
+    link: `/signin/dashboard`,
+    icon: <BookDashed className="size-6" />,
   },
 ];
 const MenuBar = () => {

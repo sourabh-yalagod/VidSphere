@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { registerUser } from "@/Redux/ThunkFunction/Register";
+import { useEffect } from "react";
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -15,27 +16,18 @@ const SignUp = () => {
   } = useForm();
 
   const navigate = useNavigate();
-  const { isLoading, error, pending, success } = useSelector(
-    (state) => state.auth
-  );
-  console.log("isLoading", isLoading);
-  console.log("Error", error);
-  console.log("pending", pending);
-
+  const { user, isPending, error } = useSelector((state) => state.auth);
   const onSubmit = async (data) => {
+    const formData = new FormData();
+    formData.append("fullname", data.fullname);
+    formData.append("username", data.username);
+    formData.append("avatar", data.avatar[0]);
+    formData.append("coverImage", data.coverImage[0]);
+    formData.append("password", data.password);
+    formData.append("email", data.email);
     try {
-      const formData = new FormData();
-      formData.append("fullname", data.fullname);
-      formData.append("username", data.username);
-      formData.append("avatar", data.avatar[0]);
-      formData.append("coverImage", data.coverImage[0]);
-      formData.append("password", data.password);
-      formData.append("email", data.email);
-
       dispatch(registerUser(formData));
-      if (success) {
-        navigate("/signin");
-      }
+
     } catch (error) {
       const err = error;
       const errorMessage =
@@ -44,6 +36,12 @@ const SignUp = () => {
       console.log(errorMessage);
     }
   };
+
+  useEffect(() => {
+    if (user && !error) {
+      navigate("/signin");
+    }
+  }, [user, error, navigate]);
 
   return (
     <div className="min-h-screen grid place-items-center bg-gray-100 dark:bg-gray-900">
@@ -161,7 +159,7 @@ const SignUp = () => {
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900 text-white outline-none border-slate-700 ml-3 font-bold py-2 px-4 rounded mt-4"
           >
-            {isLoading
+            {isPending
               ? <Loader2 className="animate-spin" /> && "Please wait...."
               : "Sign Up"}
           </button>

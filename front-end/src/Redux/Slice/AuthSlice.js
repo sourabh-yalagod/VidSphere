@@ -1,66 +1,64 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { registerUser } from "../ThunkFunction/Register";
-import { SignIn } from "../ThunkFunction/SignIn";
+import signIn from "../ThunkFunction/SignIn";
+import axios from "axios";
 
 const initialState = {
-  data: null,
-  isLoading: false,
+  user: null,
+  isPending: false,
   error: null,
-  success: false,
-  pending: false,
 };
-
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     logOutuser: (state) => {
       state.data = null;
-      state.isLoading = false;
+      state.isPending = false;
       state.error = null;
-      state.success = true;
-      state.pending = false;
-    },
-    FalsifySuccess: (state) => {
-      state.success = false;
-    },
-    NullifyError: (state) => {
-      state.error = null;
-    },
-    SetError: (state, action) => {
-      state.error = action.payload.error;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(registerUser.pending, (state) => {
-      state.isLoading = true;
-      state.pending = true;
+      state.isPending = true;
+      state.user = null;
       state.error = null;
     });
     builder.addCase(registerUser.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.pending = false;
-      state.data = action.payload;
-      state.success = true;
+      state.isPending = false;
+      state.user = action.payload;
+      state.error = null;
     });
     builder.addCase(registerUser.rejected, (state, action) => {
-      state.isLoading = false;
-      state.pending = false;
-      state.error = action.payload || "Failed to register your account";
+      state.isPending = false;
+      state.user = null;
+      state.error =
+        action.error.message || "User registration failed . . . . !";
     });
 
-    builder.addCase(SignIn.pending, (state) => {
-      state.pending = true;
-    });
-    builder.addCase(SignIn.fulfilled, (state, action) => {
-      state.data = action.payload;
-      state.success = true;
-    });
-    builder.addCase(SignIn.rejected, (state, action) => {
-      state.error = action.error instanceof Error ? action.error.message : "User signin failed . . . .!";
-    });
+    builder
+      .addCase(signIn.pending, (state) => {
+        state.isPending = true;
+        state.user = null;
+        state.error = null;
+      })
+      .addCase(signIn.fulfilled, (state, action) => {
+        state.isPending = false;
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(signIn.rejected, (state, action) => {
+        state.user = null;
+        state.isPending = false;
+        console.log(action.error);
+        if (action.error instanceof Error) {
+          state.error = action.error.message;
+        } else {
+          state.error = "Failed sign in your account";
+        }
+      });
   },
 });
 
-export const { logOutuser, FalsifySuccess, NullifyError, SetError } = authSlice.actions;
+export const { logOutuser } = authSlice.actions;
 export default authSlice.reducer;

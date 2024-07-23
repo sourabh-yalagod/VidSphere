@@ -94,7 +94,7 @@ const Home = () => {
         title: `Found related Videos . . . .!`,
         duration: 1200,
       });
-      setSearchQueryResults(data?.data)
+      setSearchQueryResults(data?.data);
       // setSearchQuery('')
     },
     onError: (error) => {
@@ -132,7 +132,11 @@ const Home = () => {
               className="absolute right-0 inset-y-0 cursor-pointer bg-blue-600 text-white px-3 rounded-l-3xl rounded-xl"
               disabled={searchMutation?.isPending}
             >
-              {searchMutation?.isPending ? <Loader2 className="animate-spin" /> : "Search"}
+              {searchMutation?.isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Search"
+              )}
             </button>
           </div>
           <div className="flex w-full max-w-sm overflow-x-auto gap-1 justify-around rounded-xl items-center">

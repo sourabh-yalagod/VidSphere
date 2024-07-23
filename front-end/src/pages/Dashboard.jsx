@@ -3,34 +3,56 @@ import { useEffect, useState } from "react";
 import TotalFigures from "@/components/TotalFigures";
 import Performance from "@/components/Performance";
 import { Eye, NotebookPen, ThumbsUp } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+
 const Dashboard = () => {
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState("");
+  // const [loading, setLoading] = useState(false);
   const [apiResponse, setApiResponse] = useState("");
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   const signal = controller.signal;
+  //   (async () => {
+  //     setLoading(true);
+  //     try {
+  //       const response = await axios.get(`/api/v1/dashboard`, {
+  //         signal: signal,
+  //       });
+  //       setApiResponse(response?.data?.data);
+  //       setError("");
+  //     } catch (error) {
+  //       setError("Error: " + error.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   })();
+
+  //   return () => {
+  //     console.log("Dashboard  : ", apiResponse);
+  //     controller.abort();
+  //   };
+  // }, []);
+
+  const handleDashboard = async () => {
+    const response = await axios.get(`/api/v1/dashboard`);
+    return response?.data;
+  };
+
+  const {
+    data,
+    isPending: loading,
+    error,
+  } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: handleDashboard,
+    staleTime: 5 * 60 * 1000,
+    onSuccess: (data) => {
+      console.log("data : ", data);
+    },
+  });
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    (async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`/api/v1/dashboard`, {
-          signal: signal,
-        });
-        setApiResponse(response?.data?.data);
-        setError("");
-      } catch (error) {
-        setError("Error: " + error.message);
-      } finally {
-        setLoading(false);
-      }
-    })();
-
-    return () => {
-      console.log("Dashboard  : ", apiResponse);
-      controller.abort();
-    };
-  }, []);
-
+    setApiResponse(data?.data);
+  }, [data]);
   const weeklyPerformance = {
     likes: {
       text: "Likes",

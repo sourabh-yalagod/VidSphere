@@ -1,16 +1,11 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
-import { getUserId } from "@/Services/Auth";
+import userAuth from "../Services/Auth";
 const SafeRouters = () => {
-  const userAuth = useSelector((state) => state.user);
-  // const authTokenFromLocal = localStorage.getItem("token");
-  // const decodedToken = jwtDecode(authTokenFromLocal)
-  // console.log("decodedToken : ",decodedToken);
-  const userId = getUserId().userId
-  
-  const token = userId || userAuth.token;
-
-  const isLoggedIn = token?.length > 0;
+  const getUserId = useSelector((state) => state.user);
+  // console.log("data ID and TOKEN : ", userAuth);
+  const { userId } = userAuth();
+  const isLoggedIn = userId?.length > 0;
 
   return isLoggedIn ? <Outlet /> : <Navigate to="/signin" />;
 };

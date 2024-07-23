@@ -1,39 +1,39 @@
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
-import { memo, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const useSignOut = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [signOutLoading, setSignOutLoading] = useState(false);
   const signOut = () => {
     (async () => {
+      // Cookies.remove("accessToken");
+      // Cookies.remove("refreshToken");
       try {
-        console.log('got it');
         setSignOutLoading(true);
         const response = await axios.post("/api/v1/users/logout");
-        localStorage.removeItem('userId')
-        localStorage.removeItem('token')
-        if (response.status) {
+        if (response) {
           toast({
             title: "Logg-Out successfull. . . . .!",
             description: response.data.message,
+            duration:1500
           });
         }
       } catch (error) {
         toast({
           title: "Logg-Out Failed. . . . .!",
           description: error.message,
-          variant:'destructive'
+          variant: "destructive",
+          duration:1500
         });
-        console.log(error.message);
       }
     })();
     setTimeout(() => {
-        setSignOutLoading(false)
-    }, 3000);
-    navigate('/')
+      setSignOutLoading(false);
+      navigate("/");
+    }, 1000);
   };
   return { signOutLoading, signOut };
 };

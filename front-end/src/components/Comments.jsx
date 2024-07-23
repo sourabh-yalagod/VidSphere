@@ -3,10 +3,11 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { MessageCircleHeartIcon } from "lucide-react";
 import { useState } from "react";
 import CustomizeComment from "./CustomizeComment";
+import userAuth from "@/Services/Auth";
 
 const Comments = ({ apiResponse, videoId }) => {
   const [seeMoreComment, SetSeeMoreComment] = useState(false);
-  const userId = apiResponse?.Uploader?._id;
+  const userId = userAuth().userId;
   return (
     <ScrollArea className="w-full text-white overflow-scroll pb-10 grid place-items-center h-56 rounded-xl p-1 border-slate-500 border-[1px] md:max-h-96 lg:h-auto">
       <div className="text-slate-700 dark:text-white text-[20px] py-4 flex w-full justify-around items-center gap-5 md:ml-5 space-y-2">
@@ -57,7 +58,7 @@ const Comments = ({ apiResponse, videoId }) => {
                 {seeMoreComment ? "See less . . . . ." : "See more....."}
               </p>
               <p className="absolute right-[5%] p-1 rounded-full bg-slate-600 text-white hover:scale-110 top-[30%]">
-                {localStorage.getItem("userId") == e?.owner ? (
+                {userId == e?.owner ? (
                   <CustomizeComment commentId={e?._id} type="edit" />
                 ) : (
                   ""

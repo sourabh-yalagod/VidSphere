@@ -10,7 +10,7 @@ import {
 import { EllipsisVertical, Loader2 } from "lucide-react";
 import { useAddToPlayList } from "@/hooks/AddToPlayList";
 import { useCallback, useEffect } from "react";
-import { getUserId } from "@/Services/Auth";
+import userAuth from "@/Services/Auth";
 import { useToast } from "@/components/ui/use-toast";
 
 const Video = ({
@@ -26,7 +26,8 @@ const Video = ({
   const navigate = useNavigate();
 
   const handleClick = useCallback(() => {
-    const userId = getUserId().userId;
+    const userId = userAuth().userId;
+    console.log("userId : ",userId);
     if (!userId) {
       toast({
         title: "Please signin to watchvideos",

@@ -1,19 +1,24 @@
+// src/pages/Signin.js
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { AxiosError } from "axios";
 import { EyeIcon, EyeOff, Loader2, User } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { SignIn } from "@/Redux/ThunkFunction/SignIn";
-import { getUser } from "@/Redux/Slice/UserSlice";
+import signIn from "@/Redux/ThunkFunction/SignIn"; 
 import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getUser } from "@/Redux/Slice/UserSlice";
 
 const Signin = () => {
+  const time = new Date();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
-  const userCredential = useSelector((state) => state.user);
   const [demoAccount] = useState({ username: "one", password: "one" });
   const dispatch = useDispatch();
+  const {
+    user: signInResponse,
+    isPending: signInLoading,
+    error: signInError,
+  } = useSelector((state) => state.auth);
   const {
     register,
     handleSubmit,
@@ -22,61 +27,35 @@ const Signin = () => {
   } = useForm();
 
   const navigate = useNavigate();
-  const { isLoading, error, success, data } = useSelector(
-    (state) => state.auth
-  );
 
-  if (data) {
-    dispatch(getUser(data?.data));
-    // localStorage.setItem("userId", data.data.id);
-    // localStorage.setItem("token", data.data.accessToken);
-  }
-
-  const openDemoAccount = () => {
-    dispatch(SignIn(demoAccount));
-    localStorage.setItem("userId", "66533e85150cfad4fea6e215");
-    toast({
-      title: "Demo account is successfull.....!",
-      description: "Please enjoy the videos . .. . . .. !",
-      duration: 1000,
-    });
-    navigate("/");
-  };
-  const onSubmit = async (data) => {
-    try {
-      dispatch(SignIn(data));
-      if (success) {
-        (() => {
-          toast({
-            title: "Sign In  successfull.....!",
-            description:
-              "user have logged with correct username and password Please enjoy the videos . .. . . .. !",
-            duration: 1000,
-          });
-        })();
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      }
-      if (error) {
-        (() => {
-          toast({
-            title: "Sign-In failed.....!",
-            description: error || "Somthing went wrong . . . . . . !",
-            duration: 1000,
-          });
-        })();
-      }
-    } catch (error) {
-      console.log("Erro");
-      const err = error;
-      console.log(err?.response?.data);
-
-      const errorMessage =
-        err.message ||
-        "User log-in failed due to some reasons. Please check again.";
-      console.log(errorMessage);
+  useEffect(() => {
+    if (signInResponse) {
+      toast({
+        title: "User logged in successfully!",
+        description: `At ${time.toLocaleTimeString()}`,
+        duration: 1700,
+      });
+      reset();
+      // navigate('/');
+      dispatch(
+        getUser({
+          id: signInResponse?.data?.id,
+          accessToken: signInResponse?.data?.accessToken
+        })
+      );
     }
+    if (signInError) {
+      toast({
+        title: "User login failed.",
+        description: `At ${time.toLocaleTimeString()}`,
+        variant: "destructive",
+        duration: 1700,
+      });
+    }
+  }, [signInResponse, signInError]);
+
+  const onSubmit = (data) => {
+    dispatch(signIn(data));
   };
 
   return (
@@ -86,14 +65,11 @@ const Signin = () => {
           <h1 className="text-2xl font-semibold cursor-pointer animate-pulse">
             Sign-In
           </h1>
-          <div
-            className="flex gap-2 items-center cursor-pointer"
-          >
+          <div className="flex gap-2 items-center cursor-pointer">
             <img
               className="size-6 sm:size-9 rounded-full"
-              src={
-                "https://lh3.googleusercontent.com/rormhrw_yZt2v1OKZBaiFCSt8b8QU02kEKiuilfgnpGkOMQd87xm7b7SyIlGoHsL18M"
-              }
+              src="https://lh3.googleusercontent.com/rormhrw_yZt2v1OKZBaiFCSt8b8QU02kEKiuilfgnpGkOMQd87xm7b7SyIlGoHsL18M"
+              alt="Logo"
             />
             <p className="text-slate-800 text-lg sm:text-xl font-semibold dark:text-white">
               Video-Tube
@@ -118,20 +94,16 @@ const Signin = () => {
               />
             </label>
             <input
+              autoComplete="off"
+              autoFocus
               placeholder="username"
               type="text"
               id="username"
-              {...register("username", {
-                required: "Username is required",
-                // pattern: {
-                //   value: /^[a-zA-Z0-9_]{3,30}$/,
-                //   message: "Username should be 3-30 characters and contain only letters, numbers, and underscores"
-                // }
-              })}
+              {...register("username", { required: "Username is required" })}
               className="bg-transparent pl-3 border-b-[2px] mt-2 rounded-xl p-1 outline-none border-blue-700 dark:border-white-500 dark:focus:border-blue-500 w-full"
             />
             {errors.username && (
-              <span className="text-red-500 absolute -bottom-7 left-0 text-xs">
+              <span className="text-red-500 absolute -bottom-1 left-0 text-xs">
                 {errors.username.message}
               </span>
             )}
@@ -154,14 +126,9 @@ const Signin = () => {
             </label>
             <input
               type={showPassword ? "text" : "password"}
+              placeholder="password"
               id="password"
-              {...register("password", {
-                required: "Password is required",
-                // pattern: {
-                //   value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-                //   message: "Password must be at least 8 characters long and include uppercase, lowercase, and a number"
-                // }
-              })}
+              {...register("password", { required: "Password is required" })}
               className="bg-transparent pl-3 border-b-[2px] mt-2 rounded-xl p-1 outline-none border-blue-700 dark:border-white-500 dark:focus:border-blue-500 w-full"
             />
             {errors.password && (
@@ -176,13 +143,10 @@ const Signin = () => {
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-700 p-1 dark:hover:bg-blue-900 text-white outline-none font-bold rounded w-full"
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="animate-spin inline-block mr-2" /> Please
-                  wait....
-                </>
+              {signInLoading ? (
+                <Loader2 className="animate-spin inline-block mr-2" />
               ) : (
-                "Sign Up"
+                "Sign In"
               )}
             </button>
             <button
@@ -192,12 +156,16 @@ const Signin = () => {
             >
               Reset
             </button>
-            <button
-              onClick={() => openDemoAccount()}
+            {/* <button
+              onClick={(e) => openDemoAccount(demoAccount)}
               className="bg-green-700 hover:bg-green-900 text-white p-1 outline-none transition-all font-bold rounded w-full"
             >
-              Try Demo
-            </button>
+              {signInLoading ? (
+                <Loader2 className="animate-spin inline-block mr-2" />
+              ) : (
+                "Try Demo"
+              )}
+            </button> */}
           </div>
         </form>
         <div className="w-full flex justify-center pt-4 gap-4 text-black dark:text-white">
@@ -206,7 +174,7 @@ const Signin = () => {
             to="/signup"
             className="text-blue-500 dark:text-blue-300 underline"
           >
-            Sign-In
+            Create Account
           </NavLink>
         </div>
       </div>

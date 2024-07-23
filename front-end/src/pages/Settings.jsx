@@ -9,7 +9,9 @@ import {
 } from "@/components/ui/dialog";
 
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import APIError from "@/utils/APIError";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import {
   Image,
@@ -21,7 +23,8 @@ import {
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function UpdateProfile() {
+export default function Settings() {
+  const time = new Date();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [response, setResponse] = useState(null);
@@ -31,87 +34,122 @@ export default function UpdateProfile() {
   const [avatar, setAvatar] = useState("");
   const [coverImage, setCoverImage] = useState("");
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const changePassword = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const res = await axios.patch("/api/v1/users/change-password", {
-        oldPassword: oldPassword,
-        newPassword: newPassword,
+  const handleChangePassword = async ({ oldPassword, newPassword }) => {
+    const response = await axios.patch("/api/v1/users/change-password", {
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    });
+    return response?.data;
+  };
+  const passwordChangeMutation = useMutation({
+    mutationFn: handleChangePassword,
+    onSuccess: () => {
+      toast({
+        title: "Password Change Successfully",
+        description: `At ${time.toLocaleTimeString()} \n ${time.toLocaleDateString()}`,
+        variant: "default",
+        duration: 2000,
       });
-      setResponse(res?.data);
-      setError("");
-      setOldPassword("");
-      setNewPassword("");
-      console.log("Response:", res?.data);
-      navigate("/signin");
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data || "An error occurred");
-      } else {
-        setError("An unexpected error occurred");
-      }
-      console.error("Error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [oldPassword, newPassword]);
+    },
+    onError: () => {
+      toast({
+        title: "Password Change Failed Try Once again . . . . !",
+        description: `At ${time.toLocaleTimeString()} \n ${time.toLocaleDateString()}`,
+        variant: "destructive",
+        duration: 2000,
+      });
+    },
+  });
 
-  const changeAvatar = useCallback(async () => {
+  const handleChangeAvatar = async ({ avatar }) => {
     const formData = new FormData();
     formData.append("avatar", avatar[0]);
-
-    try {
-      setIsLoading(true);
-      const res = await axios.patch("/api/v1/users/change-avatar", formData, {
+    const response = await axios.patch(
+      "/api/v1/users/change-avatar",
+      formData,
+      {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+      }
+    );
+    return response?.data;
+  };
+  const avatarChangeMutation = useMutation({
+    mutationFn: handleChangeAvatar,
+    onSuccess: () => {
+      toast({
+        title: "Avatar Change Successfully",
+        description: `At ${time.toLocaleTimeString()} \n ${time.toLocaleDateString()}`,
+        variant: "default",
+        duration: 2000,
       });
-      setResponse(res?.data?.data);
-      setError("");
-      setIsLoading(false);
-    } catch (error) {
-      setError("An error occurred while uploading the avatar.");
-      setIsLoading(false);
-    }
-  }, [avatar]);
+    },
+    onError: () => {
+      toast({
+        title: "Avatar Change Failed Try Once again . . . . !",
+        description: `At ${time.toLocaleTimeString()} \n ${time.toLocaleDateString()}`,
+        variant: "destructive",
+        duration: 2000,
+      });
+    },
+  });
 
-  const changeCoverImage = useCallback(async () => {
-    if (!coverImage) {
-      return setError("Please select coverImage....!");
-    }
-    try {
-      setIsLoading(true);
-      const formdata = new FormData();
-      formdata.append("coverImage", coverImage[0]);
-      const response = await axios.patch(
-        "/api/v1/users/change-coverimage",
-        formdata
-      );
-      setResponse(response?.data);
-      console.log(response);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [coverImage]);
+  const handleChangeCoverImage = async ({ coverImage }) => {
+    const formdata = new FormData();
+    formdata.append("coverImage", coverImage[0]);
+    const response = await axios.patch(
+      "/api/v1/users/change-coverimage",
+      formdata
+    );
+    return response?.data;
+  };
+  const coverImageChangeMutation = useMutation({
+    mutationFn: handleChangeCoverImage,
+    onSuccess: () => {
+      toast({
+        title: "Cover-Image Change Successfully",
+        description: `At ${time.toLocaleTimeString()} \n ${time.toLocaleDateString()}`,
+        variant: "default",
+        duration: 2000,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Cover-Image Change Failed Try Once again . . . . !",
+        description: `At ${time.toLocaleTimeString()} \n ${time.toLocaleDateString()}`,
+        variant: "destructive",
+        duration: 2000,
+      });
+    },
+  });
 
-  const genereteNewTokens = useCallback(async () => {
-    console.log("Clicked");
-    setIsLoading(true);
-    try {
-      const res = await axios.get("/api/v1/users/generate-newtokens");
-      setTokens(res?.data);
-      // localStorage.setItem("accessToken", tokens?.data?.accessToken);
-      // localStorage.setItem("refreshToken", tokens?.data?.refreshToken);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [tokens]);
+  const handleChangeNewToken = async () => {
+    const response = await axios.get("/api/v1/users/generate-newtokens");
+    return response?.data;
+  };
+  const newTokenMutation = useMutation({
+    mutationFn: handleChangeNewToken,
+    onSuccess: () => {
+      toast({
+        title: "New Auth token where generated successfully Successfully",
+        description: `At ${time.toLocaleTimeString()} \n ${time.toLocaleDateString()}`,
+        variant: "default",
+        duration: 2000,
+      });
+    },
+    onError: () => {
+      toast({
+        title:
+          "New Auth token where generation Failed Try Once again . . . . !",
+        description: `At ${time.toLocaleTimeString()} \n ${time.toLocaleDateString()}`,
+        variant: "destructive",
+        duration: 2000,
+      });
+    },
+  });
 
   return (
     <div className="min-h-screen w-full px-4 min-w-[375px] bg-white dark:bg-gray-900">
@@ -160,18 +198,18 @@ export default function UpdateProfile() {
                 />
               </div>
             </div>
-            {error && <p className="text-red-500 dark:text-red-400">{error}</p>}
-            {response && (
-              <p className="text-green-500 dark:text-green-400">
-                Password changed successfully!
-              </p>
-            )}
             <DialogFooter>
               <button
-                onClick={changePassword}
+                onClick={() =>
+                  passwordChangeMutation.mutate({ oldPassword, newPassword })
+                }
                 className="px-2 py-1 rounded-xl border-[1px] border-slate-900 dark:border-white"
               >
-                {isLoading ? <Loader2 className="animate-spin" /> : "Submit"}
+                {passwordChangeMutation.isPending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Submit"
+                )}
               </button>
             </DialogFooter>
           </DialogContent>
@@ -211,10 +249,14 @@ export default function UpdateProfile() {
             )}
             <DialogFooter>
               <button
-                onClick={() => changeAvatar()}
+                onClick={() => avatarChangeMutation.mutate({ avatar })}
                 className="px-2 py-1 max-w-[250px] grid place-items-center mx-auto w-full rounded-xl border-[1px] border-slate-900 dark:border-white"
               >
-                {isLoading ? <Loader2 className="animate-spin" /> : "Upload"}
+                {avatarChangeMutation.isPending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Upload"
+                )}
               </button>
             </DialogFooter>
           </DialogContent>
@@ -257,14 +299,19 @@ export default function UpdateProfile() {
             )}
             <DialogFooter>
               <button
-                onClick={() => changeCoverImage()}
+                onClick={() => coverImageChangeMutation.mutate({ coverImage })}
                 className="px-2 py-1 max-w-[250px] grid place-items-center mx-auto w-full rounded-xl border-[1px] border-slate-900 dark:border-white"
               >
-                {isLoading ? <Loader2 className="animate-spin" /> : "Upload"}
+                {coverImageChangeMutation.isPending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Upload"
+                )}
               </button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        {/* get New Token Dialog box */}
         <Dialog>
           <DialogTrigger asChild>
             <Button
@@ -275,12 +322,16 @@ export default function UpdateProfile() {
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[455px] w-full grid place-items-center text-slate-900 dark:text-white border-slate-900 dark:border-white rounded-xl px-4">
-            <p>Click to Generate new Token (AUTH TOKENS)</p>
+            <DialogTitle>Get new Tokens for Authentication</DialogTitle>
             <Button
-              onClick={() => genereteNewTokens()}
+              onClick={() => newTokenMutation.mutate()}
               className="border-[1px] min-w-20 w-full border-slate-600 dark:border-slate-400 p-2 rounded-xl mt-3 max-w-40 hover:scale-95 transition-all"
             >
-              {isLoading ? <Loader2 className="animate-spin" /> : "Get Tokens"}
+              {newTokenMutation.isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Get Tokens"
+              )}
             </Button>
             {error && (
               <p className="text-red-700 dark:text-red-400">

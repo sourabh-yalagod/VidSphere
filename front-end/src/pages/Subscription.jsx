@@ -1,52 +1,54 @@
-import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import axios from "axios";
 import { useParams } from "react-router-dom";
 import Video from "@/utils/Video";
 import APIloading from "@/utils/APIloading";
 import APIError from "@/utils/APIError";
 import VideoNotFound from "@/utils/VideoNotFound";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+
 import Channel from "@/components/Channel";
+import { useQuery } from "@tanstack/react-query";
 
 const Subscription = () => {
   const { userId } = useParams();
-  const [apiResponse, setApiResponse] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  console.log(userId);
+  // const [apiResponse, setApiResponse] = useState("");
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState("");
 
   // Api request for Subscription videos
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      console.log("Fetching profile for UserId:", userId);
-      try {
-        setError("");
-        const response = await axios.get(
-          `/api/v1/users/subscriptions-status/${localStorage.getItem("userId")}`
-        );
-        setApiResponse(response?.data?.data);
-        console.log("Response from Subscription : ", apiResponse);
-      } catch (error) {
-        const err = error;
-        setError(err.message ?? "Error while API call");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [userId]);
-
-  const asc = apiResponse?.videos?.sort((a,b) => {
-    return (
-      new Date(a?.video?.createdAt).getTime() -
-      new Date(b?.video?.createdAt).getTime()
+  // useEffect(() => {
+  //   (async () => {
+  //     setLoading(true);
+  //     try {
+  //       setError("");
+  //       const response = await axios.get(
+  //         `/api/v1/users/subscriptions-status/${userId}`
+  //       );
+  //       setApiResponse(response?.data?.data);
+  //       console.log("Response from Subscription : ", apiResponse);
+  //     } catch (error) {
+  //       const err = error;
+  //       setError(err.message ?? "Error while API call");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   })();
+  // }, [userId]);
+  const handleSubscription = async () => {
+    const response = await axios.get(
+      `/api/v1/users/subscriptions-status/${userId}`
     );
+    return response?.data;
+  };
+  const {
+    data: apiResponse,
+    isPending: loading,
+    error,
+  } = useQuery({
+    queryKey: ["subscription"],
+    queryFn: handleSubscription,
+    staleTime: 5 * 60 * 1000,
   });
+
   if (loading) {
     return <APIloading />;
   }
@@ -59,7 +61,7 @@ const Subscription = () => {
         Channel You Subscribed
       </p>
       <div className="w-auto justify-center items-center flex mb-5 p-5 overflow-x-auto mx-auto px-5 dark:text-white border border-slate-600 rounded-xl">
-        {apiResponse?.Channels?.map((channel) => (
+        {apiResponse?.data?.Channels?.map((channel) => (
           // console.log("channel : ",channel)
           <div key={channel._id}>
             <Channel
@@ -73,12 +75,10 @@ const Subscription = () => {
             />
           </div>
         ))}
-        {/* <CarouselPrevious /> */}
-        {/* <CarouselNext /> */}
       </div>
-      {apiResponse?.videos?.length > 0 ? (
+      {apiResponse?.data?.videos?.length > 0 ? (
         <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
-          {asc.map((video) => {
+          {apiResponse?.data?.videos.map((video) => {
             return (
               <div
                 key={video?._id + Math.random()}

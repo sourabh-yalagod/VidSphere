@@ -76,7 +76,7 @@ export default function PlatForm() {
           <div
             onClick={() =>
               navigate(
-                `signin/settings/customize-profile/${localStorage.getItem(
+                `signin/settings/settings/${localStorage.getItem(
                   "userId"
                 )}`
               )

@@ -1,8 +1,7 @@
 // Layout.jsx
-import { FC } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Provider } from "react-redux";
-import store from "@/Redux/store";
+import {store} from "@/Redux/store";
 import { Outlet, useLocation, matchPath } from "react-router-dom";
 import Hero from "@/components/Header/Hero";
 import { Toaster } from "@/components/ui/toaster";
