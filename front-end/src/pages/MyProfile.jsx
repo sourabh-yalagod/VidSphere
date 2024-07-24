@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   Bell,
   EllipsisVertical,
+  Loader,
   Loader2,
   Verified,
   Videotape,
@@ -13,37 +14,41 @@ import Video from "@/utils/Video";
 import VideoNotFound from "@/utils/VideoNotFound";
 import APIloading from "@/utils/APIloading";
 import APIError from "@/utils/APIError";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { SkeletonCard } from "@/utils/Skeleton";
+import { useToast } from "@/components/ui/use-toast";
 
 const MyProfile = () => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [apiResponse, setApiResponse] = useState("");
   const [subscribe, setSubscribe] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isloading, setIsloading] = useState(false);
 
   const { userId } = useParams();
-  console.log(userId);
 
+  const handleUserProfile = async () => {
+    const response = await axios.get(
+      `/api/v1/user-profiles/user-profile/${userId}`
+    );
+    return response?.data;
+  };
+
+  const {
+    data: userProfileData,
+    isPending: userProfileDataLoading,
+    error: userProfileDataError,
+  } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: handleUserProfile,
+    staleTime: 5 * 60 * 1000,
+  });
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      console.log("Fetching profile for UserId:", userId);
-      try {
-        setError("");
-        const response = await axios.get(
-          `/api/v1/user-profiles/user-profile/${userId}`
-        );
-        setApiResponse(response?.data?.data);
-        console.log("API Response:", apiResponse);
-      } catch (error) {
-        const err = error;
-        setError(err.message ?? "Error while API call");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+    setApiResponse(userProfileData?.data);
+  }, [userProfileData]);
 
   const userDetail = {
     fullname: apiResponse ? apiResponse?.fullname : "-",
@@ -54,49 +59,89 @@ const MyProfile = () => {
     comments: apiResponse ? apiResponse?.comments[0]?.totalComments : "-",
   };
 
-  // functio handles the subscription stistics
-  const handleSubscription = useCallback(async () => {
-    setSubscribe(!subscribe);
-    try {
-      const response = await axios.post(`/api/v1/users/handle-subscribers`, {
-        subscriptionStatus: subscribe,
-        ChannelId: userId,
-      });
-      console.log("Handle Subscription Response :", response.data.data);
-    } catch (error) {
-      const axiosError = error;
-      console.log(axiosError);
-    }
-  }, [subscribe]);
+  // function to handles the subscription stistics
 
-  // handles the deleting the video
-  const deleteVideo = async (videoId) => {
-    setIsloading(true);
-    setError("");
-    try {
-      const response = await axios.delete(
-        `/api/v1/videos/delete-video/${videoId}`
-      );
-      console.log("Response from Delete Operation : ", response.data.data);
-      navigate(0);
-    } catch (error) {
-      const axiosError = error;
-      setError(axiosError);
-      alert(error);
-      console.log("Error : ", error ?? "Error while API request...!");
-    } finally {
-      setIsloading(false);
-    }
+  const handleSubscription = async ({ subscribe, userId }) => {
+    const response = await axios.post(`/api/v1/users/handle-subscribers`, {
+      subscriptionStatus: subscribe,
+      ChannelId: userId,
+    });
+    return response?.data;
   };
 
+  const subscriptionMutation = useMutation({
+    mutationFn: handleSubscription,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      toast({
+        title: "Subscription handled Successfully . . . . !",
+        variant: "default",
+        duration: 1200,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error while fetching user Profile data . . .  . . . !",
+        description: error?.message,
+        variant: "destructive",
+        duration: 1200,
+      });
+    },
+  });
+
+  const deleteVideo = async ({ videoId }) => {
+    const response = await axios.delete(
+      `/api/v1/videos/delete-video/${videoId}`
+    );
+    return response?.data;
+  };
+
+  const deleteVideoMutation = useMutation({
+    mutationFn: deleteVideo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      toast({
+        title: "Video deleted Succesfully",
+        variant: "default",
+        duration: 1200,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error while deleting the video . . .  . . . !",
+        description: error?.message,
+        variant: "destructive",
+        duration: 1200,
+      });
+    },
+  });
+
+  // const deleteVideo = async (videoId) => {
+  //   setIsloading(true);
+  //   setError("");
+  //   try {
+  //     const response = await axios.delete(
+  //       `/api/v1/videos/delete-video/${videoId}`
+  //     );
+  //     console.log("Response from Delete Operation : ", response.data.data);
+  //   } catch (error) {
+  //     const axiosError = error;
+  //     setError(axiosError);
+  //     alert(error);
+  //     console.log("Error : ", error ?? "Error while API request...!");
+  //   } finally {
+  //     setIsloading(false);
+  //   }
+  // };
+
   // if API results error then this component runs
-  if (error) {
-    return <VideoNotFound />;
+  if (userProfileDataError) {
+    return <APIError />;
   }
 
   // while API process/loading this component runs
-  if (loading) {
-    return <APIloading />;
+  if (userProfileDataLoading) {
+    return <SkeletonCard cards={10} />;
   }
 
   if (error) {
@@ -105,9 +150,9 @@ const MyProfile = () => {
 
   // DOM
   return (
-    <div className="mx-auto w-full min-h-screen grid items-start dark:bg-slate-900">
+    <div className="mx-auto w-full min-h-scree grid items-start dark:bg-black">
       <div
-        className="w-full h-[140px] sm:h-[180px] md:h-[220px] bg-slate-400 dark:bg-slate-700 bg-cover bg-center relative"
+        className="w-full h-[140px] sm:h-[180px] md:h-[220px] dark:dark:bg-black bg-white bg-cover bg-center relative"
         style={{
           backgroundImage: `url(${apiResponse?.coverImage})`,
         }}
@@ -134,12 +179,15 @@ const MyProfile = () => {
           </div>
         </div>
         <button
-          onClick={() => handleSubscription()}
+          onClick={() => subscriptionMutation.mutate({ subscribe, userId })}
           className={`${
             apiResponse?.isSubscribed ? "bg-gray-700" : "bg-red-600"
           } text-white py-1 px-3 rounded-xl sm:text-xl md:text-2xl`}
         >
           <p className="flex gap-2 items-center">
+            {subscriptionMutation.isPending && (
+              <Loader className="animate-spin" />
+            )}
             Subscribe
             {apiResponse?.isSubscribed ? (
               <Bell className="size-4 sm:size-6 md:size-8" />
@@ -166,12 +214,13 @@ const MyProfile = () => {
                     playlist={apiResponse.playlist}
                     dropMenuBar={[
                       {
-                        name: isloading ? (
+                        name: deleteVideoMutation.isPending ? (
                           <Loader2 className="animate-spin" />
                         ) : (
                           "Delete Video"
                         ),
-                        operation: () => deleteVideo(video._id),
+                        operation: () =>
+                          deleteVideoMutation.mutate({ videoId: video?._id }),
                       },
                       {
                         name: "Add-video To playlist",
@@ -183,15 +232,16 @@ const MyProfile = () => {
             })}
           </ul>
         ) : (
-          <div className="text-xl mt-24 grid gap-8 justify-center place-items-center text-center text-slate-900 dark:text-white">
-            <VideoNotFound />
-            <button
-              onClick={() => navigate("/signin/upload-video")}
-              className="flex gap-4 z-40 text-[17px] items-center bg-slate-600 text-white px-3 py-1 rounded-xl hover:scale-105 transition-all"
-            >
-              <Videotape />
-              Upload Video
-            </button>
+          <div className="text-xl pt-5 grid justify-center place-items-center text-center text-slate-900 dark:text-white">
+            <VideoNotFound>
+              <button
+                onClick={() => navigate("/signin/upload-video")}
+                className="flex gap-4 absolute text-[17px] items-center border text-white px-3 py-1 rounded-xl hover:scale-105 transition-all"
+              >
+                <Videotape />
+                Upload Video
+              </button>
+            </VideoNotFound>
           </div>
         )}
       </div>

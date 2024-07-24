@@ -113,7 +113,7 @@ const PlaylistVideos = () => {
     return <APIError />;
   }
   return (
-    <div className="min-h-screen w-full px-3 bg-white dark:bg-slate-900 pt-16 relative">
+    <div className="min-h-screen w-full px-3 bg-white dark:bg-black pt-16 relative">
       <div>
         <p
           onClick={() => navigate(`/signin/user-profile/${userId}`)}

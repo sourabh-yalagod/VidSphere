@@ -82,7 +82,7 @@ const VideoController = ({apiResponse}) => {
           </div>
         </div>
       </div>
-      <div className="relative my-2 px-3 w-full rounded-xl bg-white dark:bg-slate-700 bg-opacity-60 border-[1px] border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-[15px] sm:text-xl">
+      <div className="relative my-2 px-3 w-full rounded-xl bg-white dark:dark:bg-black bg-white bg-opacity-60 border-[1px] border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-[15px] sm:text-xl">
         <p className="absolute top-0 left-3 text-slate-600 dark:text-slate-400 min-h-2 text-[13px] pb-4">
           Title
         </p>

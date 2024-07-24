@@ -8,17 +8,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { UserCircle, UserMinus, UserPlus } from "lucide-react";
+import { RefreshCw, UserCircle, UserMinus, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import NavigateButton from "../NavigateButton";
 
 const Hero = () => {
   const navigate = useNavigate();
   const { signOut } = useSignOut();
-  const userId = userAuth().userId;
+  const { userId } = userAuth();
 
   return (
-    <div className="w-full px-5 py-2 z-30 shadow-[0_0px_20px_1px_black] overflow-hidden flex justify-between items-start text-slate-800 dark:bg-slate-900 dark:text-slate-500 relative">
+    <div className="w-full px-5 py-2 z-30 shadow-[0_0px_20px_1px_black] overflow-hidden flex justify-between items-start text-slate-800 dark:bg-black dark:text-slate-500 relative">
       <div className="flex items-center gap-3">
         <SideMenuBar />
         <div
@@ -36,18 +36,16 @@ const Hero = () => {
           </p>
         </div>
       </div>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div className="flex items-center gap-5">
+      <div className="grid gap-5 place-items-center sm:grid-cols-2">
+        <div className="flex items-center justify-center gap-5">
           <ThemeButton />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <UserCircle className="dark:text-white text-slate-900" />
+              <UserCircle className="dark:text-white cursor-pointer text-slate-900" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="mr-10 mt-1 border rounded-[5px] py-2 px-5 space-y-3 dark:bg-slate-900 bg-slate-200">
+            <DropdownMenuContent className="mr-10 mt-1 border rounded-[5px] py-2 px-5 space-y-3 dark:bg-black bg-slate-200">
               <DropdownMenuItem
-                onClick={() =>
-                  navigate(`/signin/settings/settings/${userId}`)
-                }
+                onClick={() => navigate(`/signin/settings/settings/${userId}`)}
                 className="outline-none cursor-pointer text-slate-800 hover:scale-105 transition-all text-[14px]    dark:text-white"
               >
                 Settings
@@ -82,6 +80,10 @@ const Hero = () => {
               )}
             </DropdownMenuContent>
           </DropdownMenu>
+          <RefreshCw
+            onClick={() => navigate(0)}
+            className="text-black dark:text-white size-5 cursor-pointer active:rotate-[360deg] transition-all duration-[4s]"
+          />
         </div>
         <NavigateButton />
       </div>

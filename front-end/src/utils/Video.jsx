@@ -27,7 +27,6 @@ const Video = ({
 
   const handleClick = useCallback(() => {
     const userId = userAuth().userId;
-    console.log("userId : ",userId);
     if (!userId) {
       toast({
         title: "Please signin to watchvideos",
@@ -35,6 +34,7 @@ const Video = ({
           "if you signin then you will be authenticated to all the pages and Routes so Please sign-in and Enjoy . . . . !",
         duration: 4000,
       });
+      console.log("from Here");
       navigate("/signin");
     } else {
       navigate(`/play-video/${video?._id}`);
@@ -63,7 +63,7 @@ const Video = ({
         <DropdownMenuTrigger className="text-gray-900 dark:text-white absolute right-2 bottom-[5%] z-10">
           <EllipsisVertical className="outline-none" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="text-gray-900 dark:text-white text-[13px] grid space-y-1 border-gray-500 dark:border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-gray-100 dark:bg-slate-900 text-center w-fit mr-8 px-0 py-1">
+        <DropdownMenuContent className="text-gray-900 dark:text-white text-[13px] grid space-y-1 border-gray-500 dark:border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-gray-100 dark:bg-black text-center w-fit mr-8 px-0 py-1">
           {dropMenuBar.map((field, index) => (
             <div
               key={index}
@@ -77,7 +77,7 @@ const Video = ({
                   <DropdownMenuTrigger className=" text-slate-800 dark:text-slate-200">
                     Add-video To playlist
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="text-gray-900 dark:text-white text-[13px] grid space-y-1 border-gray-500 dark:border-slate-600 bg-opacity-50 cursor-pointer place-content-center rounded-[7px] bg-gray-100 dark:bg-slate-900 text-center w-fit px-0 py-1 mr-44">
+                  <DropdownMenuContent className="text-gray-900 dark:text-white text-[13px] grid space-y-1 border-gray-500 dark:border-slate-600 bg-opacity-50 cursor-pointer place-content-center rounded-[7px] bg-gray-100 dark:bg-black text-center w-fit px-0 py-1 mr-44">
                     {playlist?.map((playlist) => {
                       return (
                         <div
@@ -127,11 +127,11 @@ const Video = ({
           }
           className="w-9 h-9 rounded-full border-2 border-white"
         />
-        <div className="grid gap-1 pl-1">
-          <p className="text-gray-700 dark:text-white text-[16px] ml-2 overflow-hidden">
+        <div className="grid gap-1">
+          <p className="text-gray-700 dark:text-white text-[14px] ml-2 overflow-hidden">
             {video?.title ? TitleFormatar(video?.title) : ""}
           </p>
-          <div className="flex gap-3 text-[13px]">
+          <div className="flex gap-3 text-[12px] ml-2">
             <p className="text-gray-500 dark:text-slate-600 ">{username}</p>
             <p className="text-gray-500 dark:text-slate-600 ">
               views {video?.views}

@@ -51,7 +51,7 @@ const WatchHistory = () => {
   };
 
   return (
-    <div className="min-h-screen grid justify-center w-full p-5 bg-white dark:bg-slate-900 relative">
+    <div className="min-h-screen grid justify-center w-full p-5 bg-white dark:bg-black relative">
       {loading && <APIloading />}
       {error && <APIError />}
 

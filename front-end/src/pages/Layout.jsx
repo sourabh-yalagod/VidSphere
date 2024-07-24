@@ -14,7 +14,7 @@ const Layout = () => {
     matchPath(path, location.pathname)
   );
   return (
-    <div className="relative">
+    <div className="relative dark:bg-black bg-white">
       <Provider store={store}>
         <ThemeProvider>
           {!shouldHideHero && <Hero />}

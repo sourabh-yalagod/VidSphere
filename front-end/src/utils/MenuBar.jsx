@@ -90,19 +90,21 @@ const MenuBar = () => {
       {menuBarItems.map((item, index) => (
         <div
           key={index}
-          className="flex items-center gap-2 p-2 cursor-pointer rounded-xl  transition-transform transform hover:scale-105"
+          className="flex relative items-center gap-2 p-2 cursor-pointer rounded-xl  transition-transform transform hover:scale-105 hover:bg-slate-950"
           onClick={() => navigate(item?.link)}
         >
           {item?.icon}
           <span>{item?.text}</span>
+          <hr className="w-full bg-white absolute bottom-0 inset-x-0" />
         </div>
       ))}
       <div
-        className="flex items-center gap-4 py-2 px-3 cursor-pointer rounded-xl  transition-transform transform hover:scale-105"
+        className="flex relative items-center gap-4 py-2 px-3 cursor-pointer rounded-xl  transition-transform transform hover:scale-105 hover:bg-slate-950"
         onClick={() => signOut()}
       >
         <UserRoundMinusIcon className="w-6 h-6" />
         <span>Sign-Out</span>
+        <hr className="w-full bg-white absolute bottom-0 inset-x-0" />
       </div>
     </div>
   );

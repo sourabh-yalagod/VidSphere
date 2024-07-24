@@ -41,7 +41,7 @@ const LikedVideos = () => {
     return <APIError />;
   }
   return (
-    <div className="min-h-screen w-full px-3 space-y-6 bg-white dark:bg-slate-900">
+    <div className="min-h-screen w-full px-3 space-y-6 bg-white dark:bg-black">
       <div className="text-2xl flex gap-2 items-center sm:text-3xl py-5 font-mono text-gray-800 dark:text-slate-400 font-semibold">
         <HeartIcon className="size-8 border-none animate-pulse"/><p>Favorite Videos :</p>
       </div>

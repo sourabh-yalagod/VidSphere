@@ -152,7 +152,7 @@ export default function Settings() {
   });
 
   return (
-    <div className="min-h-screen w-full px-4 min-w-[375px] bg-white dark:bg-gray-900">
+    <div className="min-h-screen w-full px-4 min-w-[375px] bg-white dark:bg-black">
       {error && <APIError />}
       <h1 className="text-3xl text-center py-7 text-slate-900 dark:text-slate-300 font-semibold">
         Customize Profile

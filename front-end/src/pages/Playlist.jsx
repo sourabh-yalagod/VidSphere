@@ -155,7 +155,7 @@ const VideoPlaylist = () => {
     return <APIError />;
   }
   return (
-    <div className="min-h-screen w-full px-3 dark:bg-gray-900 pt-7 relative">
+    <div className="min-h-screen w-full px-3 dark:bg-black pt-7 relative">
       <h1 className="text-center text-gray-900 dark:text-white text-2xl font-black">
         All Play lists
       </h1>
@@ -199,7 +199,7 @@ const VideoPlaylist = () => {
                         Edit Playlist
                       </button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px] text-gray-900 dark:text-slate-200 rounded-xl bg-opacity-50 bg-gray-100 dark:bg-slate-900">
+                    <DialogContent className="sm:max-w-[425px] text-gray-900 dark:text-slate-200 rounded-xl bg-opacity-50 bg-gray-100 dark:bg-black">
                       <DialogHeader>
                         <DialogTitle className="text-xl">
                           Edit Playlist
@@ -279,7 +279,7 @@ const VideoPlaylist = () => {
               Create New Playlist
             </button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] text-gray-900 dark:text-slate-200 rounded-xl bg-opacity-50 bg-gray-100 dark:bg-slate-900">
+          <DialogContent className="sm:max-w-[425px] text-gray-900 dark:text-slate-200 rounded-xl bg-opacity-50 bg-gray-100 dark:bg-black">
             <DialogHeader>
               <DialogTitle className="text-xl">Create New Playlist</DialogTitle>
               <DialogDescription className="font-semibold tracking-wider">

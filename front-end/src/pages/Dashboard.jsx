@@ -6,38 +6,11 @@ import { Eye, NotebookPen, ThumbsUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 const Dashboard = () => {
-  // const [error, setError] = useState("");
-  // const [loading, setLoading] = useState(false);
   const [apiResponse, setApiResponse] = useState("");
-  // useEffect(() => {
-  //   const controller = new AbortController();
-  //   const signal = controller.signal;
-  //   (async () => {
-  //     setLoading(true);
-  //     try {
-  //       const response = await axios.get(`/api/v1/dashboard`, {
-  //         signal: signal,
-  //       });
-  //       setApiResponse(response?.data?.data);
-  //       setError("");
-  //     } catch (error) {
-  //       setError("Error: " + error.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   })();
-
-  //   return () => {
-  //     console.log("Dashboard  : ", apiResponse);
-  //     controller.abort();
-  //   };
-  // }, []);
-
   const handleDashboard = async () => {
     const response = await axios.get(`/api/v1/dashboard`);
     return response?.data;
   };
-
   const {
     data,
     isPending: loading,
@@ -53,6 +26,7 @@ const Dashboard = () => {
   useEffect(() => {
     setApiResponse(data?.data);
   }, [data]);
+  
   const weeklyPerformance = {
     likes: {
       text: "Likes",
@@ -111,7 +85,7 @@ const Dashboard = () => {
   const time = new Date();
   console.log(time.toLocaleDateString());
   return (
-    <div className="min-h-screen pl-4 px-4 dark:bg-slate-900 transition-all space-y-10">
+    <div className="min-h-screen pl-4 px-4 dark:bg-black transition-all space-y-10">
       <TotalFigures data={apiResponse?.AggregateFigure} />
       <Performance data={weeklyPerformance ?? ""} />
       <Performance data={monthlyPerformance ?? ""} />

@@ -1,21 +1,22 @@
 import axios from "axios";
 import { Loader2 } from "lucide-react";
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import BottomNavBar from "../components/BottomNavBar.jsx";
 import { SkeletonCard } from "@/utils/Skeleton.jsx";
 import Video from "@/utils/Video.jsx";
 import VideoNotFound from "@/utils/VideoNotFound.jsx";
 import APIError from "@/utils/APIError.jsx";
-import { useDebounceCallback } from "usehooks-ts";
 import { useToast } from "@/components/ui/use-toast";
 import { useAddToWatchLater } from "@/hooks/AddToWatchLater.js";
 import data from "../utils/Sections.json";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
+import { useNavigate } from "react-router-dom";
 
 const limit = 5;
 
 const Home = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchQueryResults, setSearchQueryResults] = useState([]);
   const [option, setOption] = useState("");
@@ -54,48 +55,17 @@ const Home = () => {
 
   const result = videos?.pages.flatMap((page) => page) || [];
 
-  // const searchQueryResult = useCallback(
-  //   async (option) => {
-  //     // setIsLoading(true);
-  //     try {
-  //       const response = await axios.get(
-  //         `/api/v1/home/search-video?search=${searchQuery || option}`
-  //       );
-  //       setError("");
-  //       setSearchQueryResults(response?.data?.data);
-  //       toast({
-  //         title: `Found related Videos . . . .!`,
-  //         duration: 1000,
-  //       });
-  //     } catch (error) {
-  //       toast({
-  //         title: "Error while searching...",
-  //         description: error?.message,
-  //         variant: "destructive",
-  //         duration: 1200,
-  //       });
-  //     } finally {
-  //       // setIsLoading(false);
-  //       setSearchQuery("");
-  //     }
-  //   },
-  //   [searchQuery, option, toast]
-  // );
-  const searchVideos = async (searchQuery) => {
+  const searchVideos = async (searchQuery, option) => {
     const response = await axios.get(
       `/api/v1/home/search-video?search=${searchQuery || option}`
     );
+
     return response?.data;
   };
   const searchMutation = useMutation({
     mutationFn: searchVideos,
     onSuccess: (data) => {
-      toast({
-        title: `Found related Videos . . . .!`,
-        duration: 1200,
-      });
       setSearchQueryResults(data?.data);
-      // setSearchQuery('')
     },
     onError: (error) => {
       toast({
@@ -115,11 +85,26 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen transition-all w-full flex relative place-items-center py-3 dark:bg-gray-900 bg-white">
+    <div className="min-h-screen transition-all w-full flex relative place-items-center py-3 dark:bg-black bg-white">
       <BottomNavBar />
       <div className="min-h-screen w-full p-2 grid place-items-center transition-all">
-        <div className="w-full grid place-items-center gap-10 md:grid-cols-2">
-          <div className="w-full relative max-w-[450px]">
+        <div className="w-full grid place-items-center gap-2 md:grid-cols-2">
+          <div className="flex w-full max-w-sm overflow-scroll p-1 gap-1 justify-around rounded-xl items-center">
+            {data?.Niches?.map((niche) => (
+              <p
+                key={niche.id}
+                className="bg-white dark:text-white text-black p-2 rounded-xl text-sm sm:text-[16px] cursor-pointer hover:scale-105 transition-all dark:bg-slate-950 hover:dark:bg-slate-800 hover:bg-blue-700"
+                onClick={() => {
+                  const choice = niche?.value;
+                  setOption(choice);
+                  searchMutation.mutate(choice);
+                }}
+              >
+                {niche.niche}
+              </p>
+            ))}
+          </div>
+          <div className="w-full relative max-w-[400px]">
             <input
               type="text"
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -139,24 +124,11 @@ const Home = () => {
               )}
             </button>
           </div>
-          <div className="flex w-full max-w-sm overflow-x-auto gap-1 justify-around rounded-xl items-center">
-            {data?.Niches?.map((niche) => (
-              <p
-                key={niche.id}
-                className="dark:bg-slate-700 dark:text-white text-slate-800 bg-slate-300 p-2 rounded-xl text-sm sm:text-[16px] cursor-pointer hover:scale-105 transition-all"
-                onClick={() => {
-                  setOption(niche?.value);
-                  searchQueryResult(niche?.value);
-                }}
-              >
-                {niche.niche}
-              </p>
-            ))}
-          </div>
         </div>
         <div className="w-full min-h-screen py-5">
           {result.length > 0 ? (
-            <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
+            // <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
+            <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {(searchQueryResults.length > 0
                 ? searchQueryResults
                 : result
@@ -166,7 +138,8 @@ const Home = () => {
                   <div
                     ref={lastItem ? ref : null}
                     key={video._id + index}
-                    className="flex-1 min-w-[320px] max-w-[350px] border-slate-700 border p-2 rounded-xl relative"
+                    // className="flex-1 min-w-[320px] max-w-[350px] border-slate-700 border p-2 rounded-xl relative"
+                    className="border-slate-700 w-full border p-2 rounded-xl relative max-w-[450px]"
                   >
                     <Video
                       video={video}
@@ -187,7 +160,7 @@ const Home = () => {
                   </div>
                 );
               })}
-              {!searchQuery && hasNextPage && <SkeletonCard />}
+              {!(searchQuery || option) && hasNextPage && <SkeletonCard />}
               {isFetchingNextPage && (
                 <Loader2 className="animate-spin mx-auto" />
               )}

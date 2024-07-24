@@ -59,7 +59,7 @@ const Signin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-black">
       <div className="text-black shadow-[0px_0px_12px_0px_black] dark:text-white border-2 max-w-[470px] mx-5 w-full rounded-xl p-7 bg-white dark:bg-gray-800">
         <div className="flex w-full justify-between mb-10">
           <h1 className="text-2xl font-semibold cursor-pointer animate-pulse">

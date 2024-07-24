@@ -35,7 +35,7 @@ const Subscrption = ({ apiResponse }) => {
     },
   });
   return (
-    <div className="flex w-full px-2 bg-slate-200 dark:bg-slate-800 my-1 rounded-xl p-1 gap-2 text-slate-700 dark:text-white items-center justify-center border-slate-500 border-[1px]">
+    <div className="flex w-full px-2 bg-slate-200 dark:bg-black my-1 rounded-xl p-1 gap-2 text-slate-700 dark:text-white items-center justify-center border-slate-500 border-[1px]">
       <div className="flex w-full items-center justify-around gap-10">
         <div className="flex items-center gap-2 justify-between relative">
           <img

@@ -10,13 +10,13 @@ const NavigateButton= () => {
       <div className="items-center gap-2 flex">
         <button
           onClick={() => navigate(-1)}
-          className="p-[2px] rounded-full bg-slate-700 hover:scale-95 transition-all hover:-translate-x-2"
+          className="p-[2px] rounded-full dark:bg-black bg-white hover:scale-95 transition-all hover:-translate-x-2"
         >
           <ArrowBigLeft className="size-7 sm:size-8" />
         </button>
         <button
           onClick={() => navigate(+1)}
-          className="p-[2px] rounded-full bg-slate-700 hover:scale-95 transition-all hover:translate-x-2"
+          className="p-[2px] rounded-full dark:bg-black bg-white hover:scale-95 transition-all hover:translate-x-2"
         >
           <ArrowBigRight className="size-7 sm:size-8" />
         </button>

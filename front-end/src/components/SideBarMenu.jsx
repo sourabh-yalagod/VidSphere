@@ -17,7 +17,7 @@ export function SideMenuBar() {
       <SheetTrigger asChild>
         <LucideMenu className="text-slate-900 dark:text-white cursor-pointer hover:scale-125 transition-all" />
       </SheetTrigger>
-      <SheetContent className="bg-white bg-opacity-85 w-auto text-slate-900 dark:bg-slate-950 dark:text-slate-300">
+      <SheetContent className="bg-white bg-opacity-85 w-auto text-slate-900 dark:bg-black border-none dark:text-slate-300">
         <SheetHeader>
           <SheetTitle className="flex items-center px-2 pt-6 w-full justify-around text-[15px] sm:text-xl">
             <div

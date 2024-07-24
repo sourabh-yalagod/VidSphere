@@ -56,7 +56,7 @@ const Subscription = () => {
     return <APIError />;
   }
   return (
-    <div className="min-h-screen w-full grid place-items-center bg-gray-100 dark:bg-slate-900 relative">
+    <div className="min-h-screen w-full grid place-items-center bg-gray-100 dark:bg-black relative">
       <p className="text-slate-700 dark:text-slate-300 text-xl py-2 text-center underline sm:text-2xl md:text-3xl lg:text-4xl">
         Channel You Subscribed
       </p>

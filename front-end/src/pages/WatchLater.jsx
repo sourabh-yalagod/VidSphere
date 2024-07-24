@@ -66,7 +66,7 @@ const WatchLaterVideos = () => {
   };
 
   return (
-    <div className="min-h-screen w-full px-3 bg-#121212 pt-16 relative dark:bg-slate-900">
+    <div className="min-h-screen w-full px-3 bg-#121212 pt-16 relative dark:bg-black">
       {loading && <APIloading />}
       {error && <APIError />}
       <div>

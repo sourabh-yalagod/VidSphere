@@ -39,12 +39,13 @@ const SignUp = () => {
 
   useEffect(() => {
     if (user && !error) {
+      console.log('from Here');
       navigate("/signin");
     }
   }, [user, error, navigate]);
 
   return (
-    <div className="min-h-screen grid place-items-center bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen grid place-items-center bg-gray-100 dark:bg-black">
       <div className="text-black dark:text-white grid place-items-center border-2 max-w-[470px] w-full rounded-xl p-8 bg-white dark:bg-gray-800">
         <h1 className="text-center text-5xl underline py-5 mb-3">Sign Up</h1>
         <form

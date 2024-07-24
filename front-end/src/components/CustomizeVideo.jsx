@@ -86,7 +86,7 @@ const CustomizeVideo = ({ videoId }) => {
             Edit
           </button>
         </DialogTrigger>
-        <DialogContent className="bg-white w-full dark:bg-slate-900 text-black dark:text-white rounded-xl border-gray-300 dark:border-gray-700 transition">
+        <DialogContent className="bg-white w-full dark:bg-black text-black dark:text-white rounded-xl border-gray-300 dark:border-gray-700 transition">
           <DialogHeader>
             <DialogTitle className="text-2xl w-full flex justify-between items-start mt-3 font-semibold mb-2">
               <p>Edit video</p>
