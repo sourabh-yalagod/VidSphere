@@ -26,7 +26,7 @@ const Home = () => {
 
   const homePageVideos = async ({ pageParam = 1 }) => {
     const response = await axios.get(
-      `/api/v1/home?limit=${limit}&page=${pageParam}`,
+      `https://videotube-auro.onrender.com/api/v1/home?limit=${limit}&page=${pageParam}`,
     );
     return response?.data;
   };
@@ -57,7 +57,7 @@ const Home = () => {
 
   const searchVideos = async (searchQuery, option) => {
     const response = await axios.get(
-      `/api/v1/home/search-video?search=${searchQuery || option}`
+      `https://videotube-auro.onrender.com/api/v1/home/search-video?search=${searchQuery || option}`
     );
 
     return response?.data;
