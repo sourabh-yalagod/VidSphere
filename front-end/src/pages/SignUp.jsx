@@ -27,7 +27,6 @@ const SignUp = () => {
     formData.append("email", data.email);
     try {
       dispatch(registerUser(formData));
-
     } catch (error) {
       const err = error;
       const errorMessage =

@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import { Bell, Loader2 } from "lucide-react";
+import { Bell, Loader, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
+import { useState } from "react";
 
 const Subscrption = ({ apiResponse }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { toast } = useToast();
-
   const handleSubscription = async ({ ChannelId }) => {
     const response = await axios.post(`/api/v1/users/handle-subscribers`, {
       ChannelId,
@@ -17,11 +17,12 @@ const Subscrption = ({ apiResponse }) => {
   };
   const subscriptionMutation = useMutation({
     mutationFn: handleSubscription,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log(data);
       queryClient.invalidateQueries({ queryKey: ["playVideo"] });
       toast({
         title: "Subscription status Toggled succesffuly . . . .!",
-        description: `At  + ${ time.toLocaleTimeString()}`,
+        description: `At  + ${time.toLocaleTimeString()}`,
         duration: 3000,
       });
     },
@@ -32,6 +33,7 @@ const Subscrption = ({ apiResponse }) => {
         variant: "destructive",
         duration: 3000,
       });
+      console.log('error');
     },
   });
   return (
@@ -54,17 +56,27 @@ const Subscrption = ({ apiResponse }) => {
           </div>
         </div>
 
-        <div className="flex items-center">
+        <div
+          className="flex items-center"
+        >
           <button
             onClick={() =>
               subscriptionMutation.mutate({ ChannelId: apiResponse?.owner })
             }
             className={`${
               apiResponse?.Uploader?.isSubscribed ? "bg-gray-700" : "bg-red-600"
-            } text-white py-1 px-2 rounded-xl sm:text-[18px] md:text-xl grid place-items-center`}
+            } text-white py-1 px-2 rounded-xl sm:text-[15px] tracking-widest grid place-items-center`}
           >
             {subscriptionMutation.isPending ? (
-              <Loader2 className="animate-spin" />
+              <div className="flex gap-2">
+                <Loader className="animate-spin" />
+                <p className="flex gap-2 items-center">
+                  Subscribe
+                  {apiResponse?.Uploader?.isSubscribed && (
+                    <Bell className="size-3 sm:size-4 md:size-5" />
+                  )}
+                </p>
+              </div>
             ) : (
               <p className="flex gap-2 items-center">
                 Subscribe

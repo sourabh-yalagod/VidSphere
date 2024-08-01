@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { Loader2, NutOffIcon, PlusCircle } from "lucide-react";
+import { FileVideo, Loader2, NutOffIcon, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -15,31 +15,9 @@ const PlaylistVideos = () => {
   const time = new Date();
   const { playlistId } = useParams();
   const { toast } = useToast();
-  const [apiResponse, setApiResponse] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [isloading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const userId = userAuth().userId;
   const queryClient = useQueryClient();
-
-  // useEffect(() => {
-  //   setLoading(true);
-  //   (async () => {
-  //     try {
-  //       setError("");
-  //       const response = await axios.get(
-  //         `/api/v1/video-play-list/all-playlist-videos/${playlistId}`
-  //       );
-  //       setApiResponse(response?.data?.data);
-  //     } catch (error) {
-  //       const err = error;
-  //       setError(err?.message ?? "Error while API call");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   })();
-  // }, [playlistId]);
 
   const fetchPlaylistVideos = async () => {
     const response = await axios.get(
@@ -56,26 +34,6 @@ const PlaylistVideos = () => {
     queryFn: fetchPlaylistVideos,
     staleTime: 10 * 60 * 1000,
   });
-  // const removeVideoFromPlaylist = async (videoId, playlistId) => {
-  //   try {
-  //     setIsLoading(true);
-  //     setError("");
-  //     const response = await axios.delete(
-  //       `/api/v1/video-play-list/delete-video/${videoId}/${playlistId}`
-  //     );
-  //     console.log(
-  //       "Response for deleting a video from Playlist : ",
-  //       response.data.data
-  //     );
-  //     // navigate(0)
-  //   } catch (error) {
-  //     const axiosError = error;
-  //     setError(axiosError);
-  //     console.log(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const removeVideoFromPlaylist = async ({ videoId, playlistId }) => {
     const response = await axios.delete(
@@ -83,7 +41,7 @@ const PlaylistVideos = () => {
     );
     return response?.data;
   };
-  
+
   const removeVideoFromPlaylistMutation = useMutation({
     mutationFn: removeVideoFromPlaylist,
     onSuccess: () => {
@@ -108,7 +66,7 @@ const PlaylistVideos = () => {
   if (playlistVideosLoding) {
     return <APIloading />;
   }
-  
+
   if (playlistVideosError) {
     return <APIError />;
   }
@@ -122,15 +80,16 @@ const PlaylistVideos = () => {
           <PlusCircle />
           Add Videos
         </p>
-        <h1 className="text-center underline underline-offset-8 py-10 animate-pulse text-gray-800 dark:text-white text-2xl font-black">
-          Playlist Videos
-        </h1>
+        <div className="flex gap-3 items-center py-10 animate-pulse text-gray-800 dark:text-white text-2xl font-black">
+          <FileVideo className="size-10" />
+          <p>Playlist Videos</p>
+        </div>
         {playlistVideos?.videos?.length > 0 ? (
-          <ul className="flex flex-wrap items-center w-full gap-2 justify-center relative">
+          <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 relative">
             {playlistVideos?.videos?.map((video) => (
               <div
                 key={video._id}
-                className="flex-1 min-w-[320px] max-w-[350px] border-slate-700 border p-2 rounded-xl relative"
+                className="border-slate-700 w-full border p-2 rounded-xl relative max-w-[450px]"
               >
                 <Video
                   video={video}

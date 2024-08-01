@@ -16,9 +16,8 @@ const Hero = () => {
   const navigate = useNavigate();
   const { signOut } = useSignOut();
   const { userId } = userAuth();
-
   return (
-    <div className="w-full px-5 py-2 z-30 shadow-[0_0px_20px_1px_black] overflow-hidden flex justify-between items-start text-slate-800 dark:bg-black dark:text-slate-500 relative">
+    <div className="w-full px-5 py-2 z-30 shadow-[1px_1px_20px_1px_gray] flex justify-between items-start text-slate-800 dark:bg-black dark:text-slate-500 relative">
       <div className="flex items-center gap-3">
         <SideMenuBar />
         <div

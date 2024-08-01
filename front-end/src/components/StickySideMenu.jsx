@@ -1,32 +1,19 @@
 import { useSignOut } from "@/hooks/SignOut";
 import userAuth from "@/Services/Auth";
-import { ThemeButton } from "@/utils/ThemeButtom";
-import {
-  Heart,
-  Home,
-  Images,
-  Loader2,
-  Settings,
-  Upload,
-  User,
-  UserCheck2,
-  UserRoundMinusIcon,
-  Videotape,
-  VideotapeIcon,
-  View,
-  ViewIcon,
-} from "lucide-react";
+import { Loader, UserRoundMinusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
+import { menuBarItems } from "@/utils/MenuBar";
 
 const StickySideMenu = ({ location }) => {
   const { signOut, signOutLoading } = useSignOut();
+  const [clicked,setCliked]=useState(false)
   const navigate = useNavigate();
   const { toast } = useToast();
-  const userId = userAuth().userId;
+  const { userId } = userAuth();
   useEffect(() => {
-    if (!userId) {
+    if (!userId && clicked) {
       toast({
         title: "Please sign-in",
         description:
@@ -40,104 +27,35 @@ const StickySideMenu = ({ location }) => {
   }, []);
 
   return (
-    <div className="fixed px-2 min-w-16 transition-all h-full left-0 inset-y-0 shadow-black shadow-lg hidden sm:block z-20 dark:bg-black">
+    <div onClick={()=>setCliked(true)} className="fixed px-2 space-y-2 group min-w-12 hover:min-w-56 bg-gray-100 transition-all pt-16 h-full left-0 inset-y-0 hidden sm:block z-20 dark:bg-black shadow-[0.1px_0.1px_15px_0.1px_black]">
+      {menuBarItems.map((item, index) => (
+        <div
+          key={index}
+          className="relative flex items-center gap-2 p-2 cursor-pointer rounded-xl hover:bg-slate-200 transition-transform transform hover:scale-105 group dark:hover:bg-gray-900"
+          onClick={() => navigate(item?.link)}
+        >
+          {item?.icon}
+          <p className="absolute left-full rounded-xl whitespace-nowrap transition-all duration-500 transform translate-x-[-100%] opacity-0 group-hover:translate-x-10 group-hover:left-0 group-hover:opacity-100 group-hover:w-auto group-hover:pl-2 group-hover:py-1">
+            {item.text}
+          </p>
+        </div>
+      ))}
       <div
-        onClick={() => navigate("/")}
-        className="flex items-center gap-4 py-2 mt-16 overflow-hidden px-3 cursor-pointer hover:bg-gray-300 dark:text-white dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
+        className="flex relative items-center gap-4 py-2 px-3 cursor-pointer rounded-xl transition-transform transform hover:scale-105 group dark:hover:bg-gray-900 hover:bg-slate-200"
+        onClick={() => signOut()}
       >
-        <Home />
+        <UserRoundMinusIcon className="w-6 h-6" />
+        <p className="absolute left-full rounded-xl whitespace-nowrap transition-all duration-500 transform translate-x-[-100%] opacity-0 group-hover:translate-x-10 group-hover:left-0 group-hover:opacity-100 group-hover:w-auto group-hover:pl-2 group-hover:py-1">
+          {signOutLoading ? (
+            <div className="flex gap-2 ">
+              <Loader className="animate-spin" />
+              sign-out
+            </div>
+          ) : (
+            "sign-out"
+          )}
+        </p>
       </div>
-      {!["/signup", "/signin"].includes(location) ? (
-        <div className="grid justify-around py-2 text-black dark:text-white space-y-1">
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => navigate("/signup")}
-          >
-            <UserCheck2 className="w-6 h-6" />
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => navigate("/signin")}
-          >
-            <User className="w-6 h-6" />
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => navigate("/signin/upload-video")}
-          >
-            <Upload className="w-6 h-6" />
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/video-play-lists/${userId}`)}
-          >
-            <VideotapeIcon className="w-6 h-6" />
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/user-profile/${userId}`)}
-          >
-            <Images className="w-6 h-6" />
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/watch-later-videos/${userId}`)}
-          >
-            <View className="w-6 h-6" />
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/settings/settings/${userId}`)}
-          >
-            <Settings className="w-6 h-6" />
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/subscription-status/${userId}`)}
-          >
-            <Videotape className="w-6 h-6" />
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/all-favourate-videos/${userId}`)}
-          >
-            <Heart className="w-6 h-6" />
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/watch-history/${userId}`)}
-          >
-            <ViewIcon className="w-6 h-6" />
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={
-              () => signOut()
-              //     {
-              //   localStorage.removeItem("accessToken");
-              //   localStorage.removeItem("userId");
-              //   navigate("/");
-              // }
-            }
-          >
-            {signOutLoading ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <UserRoundMinusIcon className="w-6 h-6" />
-            )}
-          </div>
-          <div className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105">
-            <ThemeButton />
-          </div>
-        </div>
-      ) : (
-        // <div className="grid justify-around mt-5 text-black dark:text-white space-y-1">
-        //   <MenuBar/>
-        // </div>
-        <div className="flex mt-8 items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105">
-          <ThemeButton />
-        </div>
-      )}
     </div>
   );
 };

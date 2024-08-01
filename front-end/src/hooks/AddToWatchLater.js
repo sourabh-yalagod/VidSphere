@@ -1,13 +1,8 @@
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
-// Custom hook to add a video to the watch later list
 
 export const useAddToWatchLater = () => {
-  const [watchLaterLoading, setWatchLaterLoading] = useState(false);
-  const [watchLaterError, setWatchLaterError] = useState("");
-  const [watchLaterResponse, setWatchLaterResponse] = useState({});
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const time = new Date();
@@ -19,7 +14,7 @@ export const useAddToWatchLater = () => {
   const watchLaterMutation = useMutation({
     mutationFn: addToWatchLater,
     onSuccess: () => {
-      // queryClient.invalidateQueries({ queryKey: ["playVideo"] });
+      queryClient.invalidateQueries({ queryKey: ["watchlaterVideos"] });
       toast({
         title: "Video added to watch later list . . . !",
         description: "At " + time.toLocaleTimeString(),

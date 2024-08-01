@@ -10,9 +10,9 @@ const RecommendSession = ({ videos, avatar, username , className }) => {
           return (
             <div
               key={video._id}
-              className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
+              className="border-slate-700 w-full border p-2 rounded-xl relative max-w-[450px]"
             >
-              <Video video={video} avatar={avatar} username={username} />
+              <Video titleSize={"12px"} fontSize={"11px"} video={video} avatar={avatar} username={username} />
             </div>
           );
         })}

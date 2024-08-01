@@ -23,7 +23,7 @@ export function ThemeButton() {
           <Moon className="dark:scale-0" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="text-white bg-opacity-95 transition-all bg-slate-900 rounded-xl ml-12">
+      <DropdownMenuContent className="dark:text-white bg-opacity-95 transition-all bg-white text-black dark:bg-black rounded-xl ml-12">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           Light
         </DropdownMenuItem>

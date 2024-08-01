@@ -26,7 +26,7 @@ const Home = () => {
 
   const homePageVideos = async ({ pageParam = 1 }) => {
     const response = await axios.get(
-      `/api/v1/home?limit=${limit}&page=${pageParam}`
+      `/api/v1/home?limit=${limit}&page=${pageParam}`,
     );
     return response?.data;
   };
@@ -93,7 +93,7 @@ const Home = () => {
             {data?.Niches?.map((niche) => (
               <p
                 key={niche.id}
-                className="bg-white dark:text-white text-black p-2 rounded-xl text-sm sm:text-[16px] cursor-pointer hover:scale-105 transition-all dark:bg-slate-950 hover:dark:bg-slate-800 hover:bg-blue-700"
+                className="bg-white dark:text-white text-black p-2 rounded-xl text-sm sm:text-[16px] cursor-pointer hover:scale-105 transition-all dark:bg-slate-950 hover:dark:bg-slate-800 hover:bg-blue-500 hover:text-white"
                 onClick={() => {
                   const choice = niche?.value;
                   setOption(choice);
@@ -127,7 +127,7 @@ const Home = () => {
         </div>
         <div className="w-full min-h-screen py-5">
           {result.length > 0 ? (
-            // <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
+            // <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {(searchQueryResults.length > 0
                 ? searchQueryResults

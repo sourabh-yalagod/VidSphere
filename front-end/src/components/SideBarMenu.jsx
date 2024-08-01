@@ -5,17 +5,19 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import userAuth from "@/Services/Auth";
 import MenuBar from "@/utils/MenuBar";
 import { ThemeButton } from "@/utils/ThemeButtom";
 import { HomeIcon, LucideMenu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export function SideMenuBar() {
+  const { userId } = userAuth();
   const navigate = useNavigate();
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <LucideMenu className="text-slate-900 dark:text-white cursor-pointer hover:scale-125 transition-all" />
+        <LucideMenu className="text-slate-900 sm:hidden dark:text-white cursor-pointer hover:scale-125 transition-all" />
       </SheetTrigger>
       <SheetContent className="bg-white bg-opacity-85 w-auto text-slate-900 dark:bg-black border-none dark:text-slate-300">
         <SheetHeader>
@@ -30,7 +32,7 @@ export function SideMenuBar() {
             <ThemeButton />
           </SheetTitle>
         </SheetHeader>
-        <MenuBar />
+        <MenuBar userId={userId} />
       </SheetContent>
     </Sheet>
   );

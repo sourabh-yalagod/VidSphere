@@ -1,75 +1,95 @@
-import axios, { AxiosError } from "axios";
-import { LucideTrash2 } from "lucide-react";
+import axios from "axios";
+import { Loader, LucideTrash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { calclulateVideoTime } from "@/Services/CalculateTime";
+import { useParams } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
 import APIError from "@/utils/APIError";
-import APIloading from "@/utils/APIloading";
+import { SkeletonCard } from "@/utils/Skeleton";
 import Video from "@/utils/Video";
+
 const WatchHistory = () => {
-  const navigate = useNavigate();
   const { userId } = useParams();
   const [apiResponse, setApiResponse] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  // API request for watch history videos
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      console.log("Fetching profile for UserId:", userId);
-      try {
-        setError("");
-        const response = await axios.get(
-          `/api/v1/users/watch-history/${userId}`
-        );
-        setApiResponse(response?.data?.data);
-        console.log("API Response:", apiResponse);
-      } catch (error) {
-        const err = error;
-        setError(err.message ?? "Error while API call");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [userId]);
-
-  const clearWatchHistory = async () => {
-    setLoading(true);
-    console.log("Fetching profile for UserId:", userId);
-    try {
-      setError("");
-      const response = await axios.put(`/api/v1/videos/clear-watchhistory`);
-      setApiResponse(response?.data?.data);
-      console.log("API Response:", apiResponse);
-    } catch (error) {
-      const err = error;
-      setError(err.message ?? "Error while API call");
-    } finally {
-      setLoading(false);
-    }
+  // Function to handle watch history fetch
+  const handleWatchHistoryVideos = async () => {
+    const response = await axios.get(`/api/v1/users/watch-history/${userId}`);
+    return response?.data;
   };
 
-  return (
-    <div className="min-h-screen grid justify-center w-full p-5 bg-white dark:bg-black relative">
-      {loading && <APIloading />}
-      {error && <APIError />}
+  // Query for watch history data
+  const {
+    data: watchhistoryData,
+    isPending: watchhistoryLoading,
+    error: watchhistoryError,
+  } = useQuery({
+    queryKey: ["watchHistoryVideos"],
+    queryFn: handleWatchHistoryVideos,
+    staleTime: 5 * 60 * 1000,
+  });
 
-      <div className="mt-10 w-full min-h-auto grid md:mt-16">
-        <button
-          className="p-2 border-gray-300 border-[1px] dark:border-slate-700 rounded-xl text-gray-700 dark:text-slate-300 absolute top-3 right-3"
-          onClick={clearWatchHistory}
-        >
-          Clear Watch history
-        </button>
+  // Update apiResponse when watchhistoryData changes
+  useEffect(() => {
+    setApiResponse(watchhistoryData?.data);
+  }, [watchhistoryData]);
+
+  // Function to clear watch history
+  const clearWatchHistory = async () => {
+    const response = await axios.put(`/api/v1/videos/clear-watchhistory`);
+    return response?.data;
+  };
+
+  // Mutation for clearing watch history
+  const clearWatchHistoryMutation = useMutation({
+    mutationFn: clearWatchHistory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["watchHistoryVideos"] });
+      toast({
+        title: "Watch history cleared successfully!",
+        description: `At ${new Date().toLocaleString()}`,
+        variant: "default",
+        duration: 1200,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error clearing watch history!",
+        description: `At ${new Date().toLocaleString()}`,
+        variant: "destructive",
+        duration: 1200,
+      });
+    },
+  });
+
+  // Render based on loading, error, and data
+  if (watchhistoryLoading) {
+    return <SkeletonCard cards={15} />;
+  }
+  if (watchhistoryError) {
+    return <APIError />;
+  }
+
+  return (
+    <div className="min-h-screen w-full p-5 bg-white dark:bg-black relative">
+      <button
+        className="p-2 border-gray-300 flex gap-2 my-4 border-[1px] dark:border-slate-700 rounded-xl text-gray-700 dark:text-slate-300"
+        onClick={() => clearWatchHistoryMutation.mutate()}
+      >
+        {clearWatchHistoryMutation.isPending && <Loader className="animate-spin"/>}
+        Clear Watch History
+      </button>
+      <div className="w-full min-h-auto grid">
         {apiResponse?.videos?.length > 0 ? (
-          <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
-            {apiResponse?.videos?.map((video) => (
+          <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {apiResponse.videos.map((video) => (
               <div
                 key={video._id}
                 className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
               >
-                 <Video
+                <Video
                   video={video}
                   userId={video?.owner}
                   avatar={apiResponse?.avatar}
@@ -79,9 +99,9 @@ const WatchHistory = () => {
             ))}
           </ul>
         ) : (
-          <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-gray-700 dark:text-white my-auto">
+          <div className="text-3xl flex gap-5 w-full justify-center items-centerw text-center text-gray-700 dark:text-white my-auto">
             <LucideTrash2 className="text-gray-700 dark:text-white size-12 text-center" />
-            <p>Watch history is Empty. . . . .</p>
+            <p>Watch history is empty...</p>
           </div>
         )}
       </div>

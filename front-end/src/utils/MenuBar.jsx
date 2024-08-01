@@ -4,6 +4,7 @@ import userAuth from "@/Services/Auth";
 import {
   BookDashed,
   History,
+  HomeIcon,
   PictureInPicture,
   PlaySquareIcon,
   Settings,
@@ -17,7 +18,12 @@ import {
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 const { userId } = userAuth();
-const menuBarItems = [
+export const menuBarItems = [
+  {
+    text: "Home",
+    link: "/",
+    icon: <HomeIcon className="size-6" />,
+  },
   {
     text: "Create Account",
     link: "/signup",
@@ -69,10 +75,10 @@ const menuBarItems = [
     icon: <BookDashed className="size-6" />,
   },
 ];
-const MenuBar = () => {
+const MenuBar = ({ userId }) => {
   const { toast } = useToast();
   const { signOut } = useSignOut();
-
+  
   useEffect(() => {
     if (!userId) {
       toast({
@@ -81,16 +87,17 @@ const MenuBar = () => {
         variant: "default",
         duration: 2200,
       });
+      console.log("done");
       navigate("/signin");
     }
   }, []);
   const navigate = useNavigate();
   return (
-    <div className="grid justify-around mt-5 space-y-2 z-10">
+    <div className="grid justify-around mt- space-y-2 z-10">
       {menuBarItems.map((item, index) => (
         <div
           key={index}
-          className="flex relative items-center gap-2 p-2 cursor-pointer rounded-xl  transition-transform transform hover:scale-105 hover:bg-slate-950"
+          className="flex relative items-center gap-2 p-2 cursor-pointer rounded-xl  transition-transform transform hover:scale-105 hover:bg-slate-300 dark:hover:bg-slate-950"
           onClick={() => navigate(item?.link)}
         >
           {item?.icon}
@@ -99,7 +106,7 @@ const MenuBar = () => {
         </div>
       ))}
       <div
-        className="flex relative items-center gap-4 py-2 px-3 cursor-pointer rounded-xl  transition-transform transform hover:scale-105 hover:bg-slate-950"
+        className="flex relative items-center gap-4 py-2 px-3 cursor-pointer rounded-xl  transition-transform transform hover:scale-105 hover:bg-slate-300 dark:hover:bg-slate-950"
         onClick={() => signOut()}
       >
         <UserRoundMinusIcon className="w-6 h-6" />

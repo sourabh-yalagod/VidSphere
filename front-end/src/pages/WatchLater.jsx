@@ -1,106 +1,110 @@
-import axios, { AxiosError } from "axios";
-import { Loader, LucideTrash2 } from "lucide-react";
+import axios from "axios";
+import { Loader, LucideTrash2, TimerIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Video from "@/utils/Video";
-import APIloading from "@/utils/APIloading";
 import APIError from "@/utils/APIError";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { SkeletonCard } from "@/utils/Skeleton";
+import { toast } from "@/components/ui/use-toast"; // Ensure you have a toast notification library
 
 const WatchLaterVideos = () => {
+  const queryClient = useQueryClient()
   const { userId } = useParams();
-  const [apiResponse, setApiResponse] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [isloading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [done, setDone] = useState(false);
-  console.log(userId);
+  const [apiResponse, setApiResponse] = useState(null); // Initialize state with null
 
-  // Api request for watch-later videos
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      console.log("Fetching profile for UserId:", userId);
-      try {
-        setError("");
-        const response = await axios.get(
-          `/api/v1/users/all-watch-later-videos/${userId}`
-        );
-        setDone(false);
-        setApiResponse(response?.data?.data);
-        console.log("API Response:", apiResponse);
-      } catch (error) {
-        const err = error;
-        setError(err.message ?? "Error while API call");
-        setDone(false);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [userId, done]);
-
-  // function to remove a video from watch later List
-  const removeFromWatchLaterList = async (videoId) => {
-    console.log("Clicked . . . . . !");
-
-    try {
-      setIsLoading(true);
-      setError("");
-      const response = await axios.patch(
-        `/api/v1/users/remove-watch-later-video`,
-        {
-          videoId,
-        }
-      );
-      setApiResponse(response?.data?.data);
-      console.log(
-        "Response from remove a video from watch later list :",
-        apiResponse
-      );
-      setDone(true);
-    } catch (error) {
-      const err = error;
-      setError(err.message ?? "Error while API call");
-    } finally {
-      setIsLoading(false);
-    }
+  const watchLaterVideos = async () => {
+    const response = await axios.get(
+      `/api/v1/users/all-watch-later-videos/${userId}`
+    );
+    return response.data;
   };
+
+  const {
+    data: watchlaterResponse,
+    error: watchlaterError,
+    isLoading: watchlaterLoading,
+  } = useQuery({
+    queryKey: ["watchlaterVideos", userId], // Include userId in queryKey
+    queryFn: watchLaterVideos,
+    staleTime: 5 * 60 * 1000,
+    onSuccess: (data) => setApiResponse(data), // Update state only on success
+  });
+  useEffect(() => {
+    setApiResponse(watchlaterResponse?.data);
+  }, [watchlaterResponse]);
+  const removeFromWatchLaterList = async ({ videoId }) => {
+    const response = await axios.patch(
+      `/api/v1/users/remove-watch-later-video`,
+      { videoId }
+    );
+    return response.data;
+  };
+
+  const removeWatchLaterVideoMutation = useMutation({
+    mutationFn: removeFromWatchLaterList,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({queryKey:['watchlaterVideos']})
+      toast({
+        title: "Video removed from watch later list successfully!",
+        description: data?.message,
+        variant: "default",
+        duration: 1500,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Video removing failed . . . . . !",
+        description: error?.message,
+        variant: "destructive",
+        duration: 1500,
+      });
+    },
+  });
+
+  if (watchlaterError) {
+    return <APIError />;
+  }
+
+  if (watchlaterLoading) {
+    return <SkeletonCard cards={10} />;
+  }
 
   return (
     <div className="min-h-screen w-full px-3 bg-#121212 pt-16 relative dark:bg-black">
-      {loading && <APIloading />}
-      {error && <APIError />}
       <div>
-        <h1 className="text-center text-white text-2xl font-black">
-          Watch Later Videos
-        </h1>
+        <div className="text-black flex gap-2 items-center dark:text-white text-xl pb-3 animate-pulse sm:text-2xl font-black">
+          <TimerIcon className="size-8"/>
+          <p>Watch Later Videos</p>
+        </div>
         {apiResponse?.watchLaterVideos?.length > 0 ? (
-          <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
-            {apiResponse?.watchLaterVideos?.map((video) => {
-              return (
-                <div
-                  key={video._id}
-                  className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
-                >
-                  <Video
-                    key={video._id}
-                    video={video}
-                    userId={"" || video.owner}
-                    avatar={apiResponse?.avatar}
-                    username={apiResponse?.username}
-                    dropMenuBar={[
-                      {
-                        name: isloading ? (
-                          <Loader className="animate-spin" />
-                        ) : (
-                          "Remove Video"
-                        ),
-                        operation: () => removeFromWatchLaterList(video._id),
-                      },
-                    ]}
-                  />
-                </div>
-              );
-            })}
+          <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {apiResponse.watchLaterVideos.map((video) => (
+              <div
+                key={video._id}
+                className="border-slate-700 w-full border p-2 rounded-xl relative max-w-[450px]"
+              >
+                <Video
+                  video={video}
+                  userId={video.owner || ""}
+                  avatar={apiResponse.avatar}
+                  username={apiResponse.username}
+                  dropMenuBar={[
+                    {
+                      name: removeWatchLaterVideoMutation.isPending ? (
+                        <Loader className="animate-spin" />
+                      ) : (
+                        "Remove Video"
+                      ),
+                      operation: () =>
+                        removeWatchLaterVideoMutation.mutate({
+                          videoId: video._id,
+                        }),
+                    },
+                  ]}
+                />
+              </div>
+            ))}
           </ul>
         ) : (
           <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-slate-600 my-auto">

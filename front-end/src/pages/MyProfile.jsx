@@ -23,13 +23,9 @@ const MyProfile = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [apiResponse, setApiResponse] = useState("");
-  const [subscribe, setSubscribe] = useState(false);
-  // const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isloading, setIsloading] = useState(false);
 
   const { userId } = useParams();
-
+  
   const handleUserProfile = async () => {
     const response = await axios.get(
       `/api/v1/user-profiles/user-profile/${userId}`
@@ -116,39 +112,14 @@ const MyProfile = () => {
     },
   });
 
-  // const deleteVideo = async (videoId) => {
-  //   setIsloading(true);
-  //   setError("");
-  //   try {
-  //     const response = await axios.delete(
-  //       `/api/v1/videos/delete-video/${videoId}`
-  //     );
-  //     console.log("Response from Delete Operation : ", response.data.data);
-  //   } catch (error) {
-  //     const axiosError = error;
-  //     setError(axiosError);
-  //     alert(error);
-  //     console.log("Error : ", error ?? "Error while API request...!");
-  //   } finally {
-  //     setIsloading(false);
-  //   }
-  // };
-
-  // if API results error then this component runs
   if (userProfileDataError) {
     return <APIError />;
   }
 
-  // while API process/loading this component runs
   if (userProfileDataLoading) {
     return <SkeletonCard cards={10} />;
   }
 
-  if (error) {
-    return <APIError />;
-  }
-
-  // DOM
   return (
     <div className="mx-auto w-full min-h-scree grid items-start dark:bg-black">
       <div
@@ -199,12 +170,12 @@ const MyProfile = () => {
       </div>
       <div className="mt-5 md:mt-4 w-full min-h-auto grid place-items-center px-5">
         {apiResponse?.videos?.length > 0 ? (
-          <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
+          <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {apiResponse?.videos?.map((video) => {
               return (
                 <div
                   key={video._id}
-                  className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
+                  className="border-slate-700 w-full border p-2 rounded-xl relative max-w-[450px]"
                 >
                   <Video
                     video={video}

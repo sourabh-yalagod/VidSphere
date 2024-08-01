@@ -4,6 +4,7 @@ import TotalFigures from "@/components/TotalFigures";
 import Performance from "@/components/Performance";
 import { Eye, NotebookPen, ThumbsUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Dashboard = () => {
   const [apiResponse, setApiResponse] = useState("");
@@ -11,11 +12,8 @@ const Dashboard = () => {
     const response = await axios.get(`/api/v1/dashboard`);
     return response?.data;
   };
-  const {
-    data,
-    isPending: loading,
-    error,
-  } = useQuery({
+  const [skeletons] = useState(Array(3).fill(null));
+  const { data, isPending, error } = useQuery({
     queryKey: ["dashboard"],
     queryFn: handleDashboard,
     staleTime: 5 * 60 * 1000,
@@ -26,7 +24,7 @@ const Dashboard = () => {
   useEffect(() => {
     setApiResponse(data?.data);
   }, [data]);
-  
+
   const weeklyPerformance = {
     likes: {
       text: "Likes",
@@ -82,8 +80,20 @@ const Dashboard = () => {
     heading: "Yearly Statistics",
   };
 
-  const time = new Date();
-  console.log(time.toLocaleDateString());
+  if (isPending) {
+    return skeletons.map((_, index) => {
+      return (
+        <div
+          key={index}
+          className="min-w-[310px] my-5 w-full grid gap-3 border-slate-500 dark:border-slate-200 border rounded-xl text-slate-800 dark:text-slate-200 p-3 sm:grid-cols-2 md:grid-cols-3"
+        >
+          <Skeleton className="h-[150px] bg-slate-500 w-full rounded-xl" />
+          <Skeleton className="h-[150px] bg-slate-500 w-full rounded-xl" />
+          <Skeleton className="h-[150px] bg-slate-500 w-full rounded-xl" />
+        </div>
+      );
+    });
+  }
   return (
     <div className="min-h-screen pl-4 px-4 dark:bg-black transition-all space-y-10">
       <TotalFigures data={apiResponse?.AggregateFigure} />

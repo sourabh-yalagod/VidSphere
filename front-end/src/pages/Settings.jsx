@@ -20,15 +20,13 @@ import {
   LockIcon,
   PowerOffIcon,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
   const time = new Date();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [response, setResponse] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [tokens, setTokens] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -242,11 +240,6 @@ export default function Settings() {
               </div>
             </div>
             {error && <p className="text-red-500 dark:text-red-400">{error}</p>}
-            {response && (
-              <p className="text-green-500 dark:text-green-400">
-                Avatar uploaded successfully!
-              </p>
-            )}
             <DialogFooter>
               <button
                 onClick={() => avatarChangeMutation.mutate({ avatar })}
@@ -292,11 +285,6 @@ export default function Settings() {
               </div>
             </div>
             {error && <p className="text-red-500 dark:text-red-400">{error}</p>}
-            {response && (
-              <p className="text-green-500 dark:text-green-400">
-                Cover Image uploaded successfully!
-              </p>
-            )}
             <DialogFooter>
               <button
                 onClick={() => coverImageChangeMutation.mutate({ coverImage })}

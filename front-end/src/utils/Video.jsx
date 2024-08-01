@@ -12,6 +12,7 @@ import { useAddToPlayList } from "@/hooks/AddToPlayList";
 import { useCallback, useEffect } from "react";
 import userAuth from "@/Services/Auth";
 import { useToast } from "@/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Video = ({
   video = {},
@@ -20,11 +21,13 @@ const Video = ({
   username = "",
   dropMenuBar = [],
   playlist = [],
+  titleSize = "14px",
+  fontSize = "12px",
 }) => {
   const { toast } = useToast();
   const { addToPlayList, addToPlaylistLoading } = useAddToPlayList();
   const navigate = useNavigate();
-
+  const queryClient = useQueryClient();
   const handleClick = useCallback(() => {
     const userId = userAuth().userId;
     if (!userId) {
@@ -38,6 +41,7 @@ const Video = ({
       navigate("/signin");
     } else {
       navigate(`/play-video/${video?._id}`);
+      queryClient.invalidateQueries({ queryKey: ["watchHistoryVideos"] });
     }
   }, []);
 
@@ -105,7 +109,7 @@ const Video = ({
           <a
             href={video?.videoFile}
             className="px-2 py-1 m-1 grid place-items-center rounded-[9px] transition-all pb-2 hover:bg-gray-500 dark:hover:bg-slate-800 dark:text-slate-400"
-            target="_top"
+            target="_blank"
             rel="noopener noreferrer"
             type="download"
           >
@@ -125,13 +129,15 @@ const Video = ({
             video?.owner?.avatar ??
             "https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg"
           }
-          className="w-9 h-9 rounded-full border-2 border-white"
+          className={`size-8 rounded-full border-2 border-white`}
         />
         <div className="grid gap-1">
-          <p className="text-gray-700 dark:text-white text-[14px] ml-2 overflow-hidden">
+          <p
+            className={`text-gray-700 dark:text-white ml-2 overflow-hidden text-[${titleSize}]`}
+          >
             {video?.title ? TitleFormatar(video?.title) : ""}
           </p>
-          <div className="flex gap-3 text-[12px] ml-2">
+          <div className={`flex gap-3 ml-2 text-[${fontSize}]`}>
             <p className="text-gray-500 dark:text-slate-600 ">{username}</p>
             <p className="text-gray-500 dark:text-slate-600 ">
               views {video?.views}
