@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const Dashboard = () => {
   const [apiResponse, setApiResponse] = useState("");
   const handleDashboard = async () => {
-    const response = await axios.get(`/api/v1/dashboard`);
+    const response = await axios.get(`${process.env.BASE_URL}/api/v1/dashboard`);
     return response?.data;
   };
   const [skeletons] = useState(Array(3).fill(null));

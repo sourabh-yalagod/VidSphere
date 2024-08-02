@@ -10,7 +10,7 @@ export const useAddToPlayList = () => {
 
   const addToPlaylist = async ({ videoId, playlistId }) => {
     const response = await axios.post(
-      `/api/v1/video-play-list/new-video/${videoId}/${playlistId}`
+      `${process.env.BASE_URL}/api/v1/video-play-list/new-video/${videoId}/${playlistId}`
     );
     return response?.data;
   };

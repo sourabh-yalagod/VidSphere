@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const signOutUser = createAsyncThunk("auth/signout", async () => {
   try {
-    const response = await axios.post(`/api/v1/users/logout`, {
+    const response = await axios.post(`${process.env.BASE_URL}/api/v1/users/logout`, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

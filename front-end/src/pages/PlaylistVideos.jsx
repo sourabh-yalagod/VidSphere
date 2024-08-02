@@ -21,7 +21,7 @@ const PlaylistVideos = () => {
 
   const fetchPlaylistVideos = async () => {
     const response = await axios.get(
-      `/api/v1/video-play-list/all-playlist-videos/${playlistId}`
+      `${process.env.BASE_URL}/api/v1/video-play-list/all-playlist-videos/${playlistId}`
     );
     return response?.data?.data;
   };
@@ -37,7 +37,7 @@ const PlaylistVideos = () => {
 
   const removeVideoFromPlaylist = async ({ videoId, playlistId }) => {
     const response = await axios.delete(
-      `/api/v1/video-play-list/delete-video/${videoId}/${playlistId}`
+      `${process.env.BASE_URL}/api/v1/video-play-list/delete-video/${videoId}/${playlistId}`
     );
     return response?.data;
   };

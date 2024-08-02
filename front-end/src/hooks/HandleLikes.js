@@ -13,7 +13,7 @@ export const useHandleLikes = () => {
   const queryClient = useQueryClient();
   const handleLikes = async ({ userId, videoId }) => {
     const response = await axios.post(
-      `/api/v1/likes/toggle-like-status/${videoId}`,
+      `${process.env.BASE_URL}/api/v1/likes/toggle-like-status/${videoId}`,
       { userId }
     );
     return response?.data;

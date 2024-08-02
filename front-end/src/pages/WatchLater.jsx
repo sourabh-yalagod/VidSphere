@@ -15,7 +15,7 @@ const WatchLaterVideos = () => {
 
   const watchLaterVideos = async () => {
     const response = await axios.get(
-      `/api/v1/users/all-watch-later-videos/${userId}`
+      `${process.env.BASE_URL}/api/v1/users/all-watch-later-videos/${userId}`
     );
     return response.data;
   };

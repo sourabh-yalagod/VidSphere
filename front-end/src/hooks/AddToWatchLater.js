@@ -8,7 +8,7 @@ export const useAddToWatchLater = () => {
   const time = new Date();
 
   const addToWatchLater = async (videoId) => {
-    const response = await axios.post(`/api/v1/users/watch-later`, { videoId });
+    const response = await axios.post(`${process.env.BASE_URL}/api/v1/users/watch-later`, { videoId });
     return response?.data;
   };
   const watchLaterMutation = useMutation({

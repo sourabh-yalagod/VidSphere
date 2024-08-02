@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const registerUser = createAsyncThunk("registerUser", async (formData, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`/api/v1/users/register`, formData, {
+    const response = await axios.post(`${process.env.BASE_URL}/api/v1/users/register`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
