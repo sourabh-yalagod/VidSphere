@@ -26,7 +26,7 @@ const Home = () => {
 
   const homePageVideos = async ({ pageParam = 1 }) => {
     const response = await axios.get(
-      `${process.env.BASE_URL}/api/v1/home?limit=${limit}&page=${pageParam}`,
+      `https://videotube-auro.onrender.com/api/v1/home?limit=${limit}&page=${pageParam}`,
     );
     return response?.data;
   };
