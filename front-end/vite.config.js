@@ -8,10 +8,11 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/api": "https://videotube-auro.onrender.com", // Backend URL
-      // changeOrigin: true,
-      // secure: false,
-      // rewrite: (path) => path.replace(/^\/api/, ''),
+      "/api": {
+        target: "https://videotube-auro.onrender.com",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
     },
   },
   plugins: [react()],
