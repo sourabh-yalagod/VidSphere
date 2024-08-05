@@ -15,7 +15,7 @@ const LikedVideos = () => {
 
   const handleLikedVideos = async () => {
     const response = await axios.get(
-      `/api/v1/likes/all-favourate-videos/${userId}`
+      `${import.meta.env.VITE_API_URL}/api/v1/likes/all-favourate-videos/${userId}`
     );
     return response?.data;
   };

@@ -35,7 +35,7 @@ export default function Settings() {
   const { toast } = useToast();
 
   const handleChangePassword = async ({ oldPassword, newPassword }) => {
-    const response = await axios.patch(`/api/v1/users/change-password`, {
+    const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/v1/users/change-password`, {
       oldPassword: oldPassword,
       newPassword: newPassword,
     });
@@ -65,7 +65,7 @@ export default function Settings() {
     const formData = new FormData();
     formData.append("avatar", avatar[0]);
     const response = await axios.patch(
-      `/api/v1/users/change-avatar`,
+      `${import.meta.env.VITE_API_URL}/api/v1/users/change-avatar`,
       formData,
       {
         headers: {
@@ -99,7 +99,7 @@ export default function Settings() {
     const formdata = new FormData();
     formdata.append("coverImage", coverImage[0]);
     const response = await axios.patch(
-      `/api/v1/users/change-coverimage`,
+      `${import.meta.env.VITE_API_URL}/api/v1/users/change-coverimage`,
       formdata
     );
     return response?.data;
@@ -125,7 +125,7 @@ export default function Settings() {
   });
 
   const handleChangeNewToken = async () => {
-    const response = await axios.get(`/api/v1/users/generate-newtokens`);
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/generate-newtokens`);
     return response?.data;
   };
   const newTokenMutation = useMutation({
