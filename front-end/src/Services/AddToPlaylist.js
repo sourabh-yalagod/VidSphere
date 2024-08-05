@@ -10,7 +10,7 @@ const addToPlaylist = async ({ videoId }) => {
     setLoading(true);
     setError("");
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/v1/video-play-list/new-video/${videoId}`
+      `/api/v1/video-play-list/new-video/${videoId}`
     );
     setApiResponse(response?.data?.data);
     console.log("API Response for playlist:", apiResponse);

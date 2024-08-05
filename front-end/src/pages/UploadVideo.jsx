@@ -28,7 +28,7 @@ const UploadVideo = () => {
   const uploadVideoMutation = useMutation({
     mutationFn: async (formData) => {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/videos/upload-video`,
+        `/api/v1/videos/upload-video`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

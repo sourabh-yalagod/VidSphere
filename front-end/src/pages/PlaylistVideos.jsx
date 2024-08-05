@@ -21,7 +21,7 @@ const PlaylistVideos = () => {
 
   const fetchPlaylistVideos = async () => {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/v1/video-play-list/all-playlist-videos/${playlistId}`
+      `/api/v1/video-play-list/all-playlist-videos/${playlistId}`
     );
     return response?.data?.data;
   };
@@ -37,7 +37,7 @@ const PlaylistVideos = () => {
 
   const removeVideoFromPlaylist = async ({ videoId, playlistId }) => {
     const response = await axios.delete(
-      `${import.meta.env.VITE_API_URL}/api/v1/video-play-list/delete-video/${videoId}/${playlistId}`
+      `/api/v1/video-play-list/delete-video/${videoId}/${playlistId}`
     );
     return response?.data;
   };

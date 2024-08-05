@@ -30,7 +30,7 @@ const CustomizeVideo = ({ videoId }) => {
   //     formdata.append("description", newDescription);
 
   //     const res = await axios.patch(
-  //       `${import.meta.env.VITE_API_URL}/api/v1/videos/update-video/${videoId}`,
+  //       `/api/v1/videos/update-video/${videoId}`,
   //       formdata
   //     );
   //     console.log("Respose for Update Video : ", res.data);
@@ -51,7 +51,7 @@ const CustomizeVideo = ({ videoId }) => {
     formdata.append("description", newDescription);
 
     const response = await axios.patch(
-      `${import.meta.env.VITE_API_URL}/api/v1/videos/update-video/${videoId}`,
+      `/api/v1/videos/update-video/${videoId}`,
       formdata
     );
     return response?.data;
