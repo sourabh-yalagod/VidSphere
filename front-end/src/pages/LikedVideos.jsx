@@ -15,7 +15,7 @@ const LikedVideos = () => {
 
   const handleLikedVideos = async () => {
     const response = await axios.get(
-      `${process.env.BASE_URL}/api/v1/likes/all-favourate-videos/${userId}`
+      `/api/v1/likes/all-favourate-videos/${userId}`
     );
     return response?.data;
   };

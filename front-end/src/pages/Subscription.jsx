@@ -14,7 +14,7 @@ const Subscription = () => {
 
   const handleSubscription = async () => {
     const response = await axios.get(
-      `${process.env.BASE_URL}/api/v1/users/subscriptions-status/${userId}`
+      `/api/v1/users/subscriptions-status/${userId}`
     );
     return response?.data;
   };

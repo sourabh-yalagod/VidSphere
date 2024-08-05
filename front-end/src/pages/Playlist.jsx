@@ -41,7 +41,7 @@ const VideoPlaylist = () => {
 
   const fetchAllPlaylist = async () => {
     const response = await axios.get(
-      `${process.env.BASE_URL}/api/v1/video-play-list/all-play-lists/${userId}`
+      `/api/v1/video-play-list/all-play-lists/${userId}`
     );
     return response?.data;
   };
@@ -64,7 +64,7 @@ const VideoPlaylist = () => {
     formdata.append("description", newDescription);
 
     const response = await axios.post(
-      `${process.env.BASE_URL}/api/v1/video-play-list/create-playlist`,
+      `/api/v1/video-play-list/create-playlist`,
       formdata
     );
     return response?.data;
@@ -96,7 +96,7 @@ const VideoPlaylist = () => {
     formdata.append("title", newTitle);
     formdata.append("description", newDescription);
     const response = await axios.put(
-      `${process.env.BASE_URL}/api/v1/video-play-list/modify-playlist/${playlistId}`,
+      `/api/v1/video-play-list/modify-playlist/${playlistId}`,
       formdata
     );
     return response?.data;
@@ -122,7 +122,7 @@ const VideoPlaylist = () => {
   });
   const handlePlaylistDeletion = async (playlistId) => {
     const response = await axios.delete(
-      `${process.env.BASE_URL}/api/v1/video-play-list/delete-playlist/${playlistId}`
+      `/api/v1/video-play-list/delete-playlist/${playlistId}`
     );
     return response?.data;
   };

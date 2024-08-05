@@ -14,6 +14,8 @@ import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 
 const limit = 5;
+const URL = import.meta.env.VITE_API_URL;
+console.log(import.meta.env.VITE_API_URL);
 
 const Home = () => {
   const navigate = useNavigate();
@@ -26,10 +28,13 @@ const Home = () => {
 
   const homePageVideos = async ({ pageParam = 1 }) => {
     const response = await axios.get(
-      `/api/v1/home?limit=${limit}&page=${pageParam}`,
+      `${
+        import.meta.env.VITE_API_URL
+      }/api/v1/home?limit=${limit}&page=${pageParam}`
     );
     return response?.data;
   };
+  // console.log(import.meta.env.VITE_API_URL);
 
   const {
     data: videos,
@@ -57,7 +62,9 @@ const Home = () => {
 
   const searchVideos = async (searchQuery, option) => {
     const response = await axios.get(
-      `https://videotube-auro.onrender.com/api/v1/home/search-video?search=${searchQuery || option}`
+      `/api/v1/home/search-video?search=${
+        searchQuery || option
+      }`
     );
 
     return response?.data;
