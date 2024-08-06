@@ -20,7 +20,7 @@ const CustomizeComment = ({ userId, videoId, type, commentId }) => {
 
   const handleNewComment = async ({ comment, userId }) => {
     const response = await axios.post(
-      `/api/v1/comments/add-comment/${videoId}`,
+      `${import.meta.env.VITE_API_URL}/api/v1/comments/add-comment/${videoId}`,
       {
         comment: comment || `newComment from User`,
         userId: userId,
@@ -51,7 +51,7 @@ const CustomizeComment = ({ userId, videoId, type, commentId }) => {
 
   const handleEditComment = async ({ commentId, comment }) => {
     const response = await axios.patch(
-      `/api/v1/comments/c/edit-comment/${commentId}`,
+      `${import.meta.env.VITE_API_URL}/api/v1/comments/c/edit-comment/${commentId}`,
       {
         comment: comment || `newComment from User`,
       }
@@ -79,7 +79,7 @@ const CustomizeComment = ({ userId, videoId, type, commentId }) => {
 
   const handleDeleteComment = async (commentId) => {
     const response = await axios.delete(
-      `/api/v1/comments/c/delete-comment/${commentId}`
+      `${import.meta.env.VITE_API_URL}/api/v1/comments/c/delete-comment/${commentId}`
     );
     return response?.data;
   };

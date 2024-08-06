@@ -6,11 +6,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
   },
-  server: {
-    proxy:{
-      '/api':'https://videotube-auro.onrender.com'
-    }
-  },
+  // server: {
+  //   proxy:{
+  //     '/api':'https://videotube-auro.onrender.com'
+  //   }
+  // },
   plugins: [react()],
   resolve: {
     alias: {

@@ -26,7 +26,7 @@ const Home = () => {
 
   const homePageVideos = async ({ pageParam = 1 }) => {
     const response = await axios.get(
-      `/api/v1/home?limit=${limit}&page=${pageParam}`
+      `${import.meta.env.VITE_API_URL}/api/v1/home?limit=${limit}&page=${pageParam}`
     );
     return response?.data;
   };
@@ -56,7 +56,7 @@ const Home = () => {
 
   const searchVideos = async (searchQuery, option) => {
     const response = await axios.get(
-      `/api/v1/home/search-video?search=${
+      `${import.meta.env.VITE_API_URL}/api/v1/home/search-video?search=${
         searchQuery || option
       }`
     );
