@@ -56,7 +56,7 @@ const Home = () => {
 
   const searchVideos = async (searchQuery, option) => {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/v1/home/search-video?search=${
+      `/api/v1/home/search-video?search=${
         searchQuery || option
       }`
     );

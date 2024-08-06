@@ -10,7 +10,7 @@ const Subscrption = ({ apiResponse }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const handleSubscription = async ({ ChannelId }) => {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/users/handle-subscribers`, {
+    const response = await axios.post(`/api/v1/users/handle-subscribers`, {
       ChannelId,
     });
     return response?.data;

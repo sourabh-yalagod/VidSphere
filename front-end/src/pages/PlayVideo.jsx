@@ -11,7 +11,7 @@ import Comments from "@/components/Comments";
 import RecommendSession from "@/components/RecommendSession";
 
 const fetchVideoData = async (videoId) => {
-  const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/videos/get-video/${videoId}`);
+  const response = await axios.get(`/api/v1/videos/get-video/${videoId}`);
   return response.data.data;
 };
 

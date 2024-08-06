@@ -13,7 +13,7 @@ export const useSignOut = () => {
       // Cookies.remove("refreshToken");
       try {
         setSignOutLoading(true);
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/users/logout`);
+        const response = await axios.post(`/api/v1/users/logout`);
         if (response) {
           toast({
             title: "Logg-Out successfull. . . . .!",

@@ -15,7 +15,7 @@ const WatchLaterVideos = () => {
 
   const watchLaterVideos = async () => {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/v1/users/all-watch-later-videos/${userId}`
+      `/api/v1/users/all-watch-later-videos/${userId}`
     );
     return response.data;
   };
@@ -35,7 +35,7 @@ const WatchLaterVideos = () => {
   }, [watchlaterResponse]);
   const removeFromWatchLaterList = async ({ videoId }) => {
     const response = await axios.patch(
-      `${import.meta.env.VITE_API_URL}/api/v1/users/remove-watch-later-video`,
+      `/api/v1/users/remove-watch-later-video`,
       { videoId }
     );
     return response.data;

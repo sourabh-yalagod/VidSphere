@@ -28,7 +28,7 @@ const MyProfile = () => {
   
   const handleUserProfile = async () => {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/v1/user-profiles/user-profile/${userId}`
+      `/api/v1/user-profiles/user-profile/${userId}`
     );
     return response?.data;
   };
@@ -58,7 +58,7 @@ const MyProfile = () => {
   // function to handles the subscription stistics
 
   const handleSubscription = async ({ subscribe, userId }) => {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/users/handle-subscribers`, {
+    const response = await axios.post(`/api/v1/users/handle-subscribers`, {
       subscriptionStatus: subscribe,
       ChannelId: userId,
     });
@@ -87,7 +87,7 @@ const MyProfile = () => {
 
   const deleteVideo = async ({ videoId }) => {
     const response = await axios.delete(
-      `${import.meta.env.VITE_API_URL}/api/v1/videos/delete-video/${videoId}`
+      `/api/v1/videos/delete-video/${videoId}`
     );
     return response?.data;
   };
